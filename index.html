@@ -14,116 +14,75 @@
 
     <nav class="tabs">
         <button class="tab active" data-tab="dice">Dice</button>
-        <button class="tab" data-tab="advanced">Advanced</button>
         <button class="tab" data-tab="favorites">Favorites</button>
         <button class="tab" data-tab="history">History</button>
     </nav>
 
-    <!-- Basic Dice Tab -->
+    <!-- Dice Tab -->
     <section id="dice" class="tab-content active">
         <div class="input-row">
-            <div class="input-display" id="basicInput">Tap a die to roll</div>
-            <button class="backspace-btn" id="basicBackspace">&#9003;</button>
+            <div class="input-display" id="diceInput">Tap a die to roll</div>
+            <button class="backspace-btn" id="diceBackspace">&#9003;</button>
         </div>
-        <div class="result-area" id="basicResult"></div>
-        <div class="dice-grid basic-dice">
+        <div class="hint-label" id="diceHint"></div>
+        <div class="result-area" id="diceResult"></div>
+        <div class="dice-grid">
             <button class="die-btn d100" data-die="d100">d100</button>
             <button class="die-btn d20" data-die="d20">d20</button>
             <button class="die-btn d12" data-die="d12">d12</button>
             <button class="die-btn d10" data-die="d10">d10</button>
         </div>
-        <div class="dice-grid basic-dice">
+        <div class="dice-grid">
             <button class="die-btn d8" data-die="d8">d8</button>
-            <button class="die-btn d6" data-die="d6">d6</button>
-            <button class="die-btn d4" data-die="d4">d4</button>
-            <button class="die-btn d3" data-die="d3">d3</button>
-            <button class="die-btn d2" data-die="d2">d2</button>
-        </div>
-        <div class="number-grid">
-            <button class="num-btn" data-val="7">7</button>
-            <button class="num-btn" data-val="8">8</button>
-            <button class="num-btn" data-val="9">9</button>
-        </div>
-        <div class="number-grid">
-            <button class="num-btn" data-val="4">4</button>
-            <button class="num-btn" data-val="5">5</button>
-            <button class="num-btn" data-val="6">6</button>
-        </div>
-        <div class="number-grid">
-            <button class="num-btn" data-val="1">1</button>
-            <button class="num-btn" data-val="2">2</button>
-            <button class="num-btn" data-val="3">3</button>
-        </div>
-        <div class="number-grid">
-            <button class="num-btn op-btn" data-val="-">&minus;</button>
-            <button class="num-btn" data-val="0">0</button>
-            <button class="num-btn op-btn" data-val="+">+</button>
-        </div>
-        <div class="action-row">
-            <button class="action-btn clear-btn" id="basicClear">Clear</button>
-            <button class="action-btn roll-btn" id="basicRoll">Roll</button>
-            <button class="action-btn fav-btn" id="basicFav">&#9734;</button>
-        </div>
-    </section>
-
-    <!-- Advanced Dice Tab -->
-    <section id="advanced" class="tab-content">
-        <div class="input-row">
-            <div class="input-display" id="advInput">Tap dice &amp; modifiers</div>
-            <button class="backspace-btn" id="advBackspace">&#9003;</button>
-        </div>
-        <div class="hint-label" id="advHint"></div>
-        <div class="result-area" id="advResult"></div>
-        <div class="dice-grid adv-dice">
-            <button class="die-btn d100" data-die="d100">d100</button>
-            <button class="die-btn d20" data-die="d20">d20</button>
-            <button class="die-btn d12" data-die="d12">d12</button>
-            <button class="die-btn d10" data-die="d10">d10</button>
-            <button class="die-btn d8" data-die="d8">d8</button>
-        </div>
-        <div class="dice-grid adv-dice">
             <button class="die-btn d6" data-die="d6">d6</button>
             <button class="die-btn d4" data-die="d4">d4</button>
             <button class="die-btn d3" data-die="d3">d3</button>
             <button class="die-btn d2" data-die="d2">d2</button>
             <button class="die-btn dF" data-die="dF">dF</button>
         </div>
-        <div class="number-grid adv-num">
-            <button class="num-btn" data-val="1">1</button>
-            <button class="num-btn" data-val="2">2</button>
-            <button class="num-btn" data-val="3">3</button>
+        <div class="number-grid">
+            <button class="num-btn" data-val="7">7</button>
+            <button class="num-btn" data-val="8">8</button>
+            <button class="num-btn" data-val="9">9</button>
+        </div>
+        <div class="number-grid">
             <button class="num-btn" data-val="4">4</button>
             <button class="num-btn" data-val="5">5</button>
             <button class="num-btn" data-val="6">6</button>
         </div>
-        <div class="number-grid adv-num">
-            <button class="num-btn" data-val="7">7</button>
-            <button class="num-btn" data-val="8">8</button>
-            <button class="num-btn" data-val="9">9</button>
-            <button class="num-btn" data-val="0">0</button>
+        <div class="number-grid">
+            <button class="num-btn" data-val="1">1</button>
+            <button class="num-btn" data-val="2">2</button>
+            <button class="num-btn" data-val="3">3</button>
+        </div>
+        <div class="number-grid">
             <button class="num-btn op-btn" data-val="-">&minus;</button>
+            <button class="num-btn" data-val="0">0</button>
             <button class="num-btn op-btn" data-val="+">+</button>
         </div>
-        <div class="number-grid adv-mod">
-            <button class="mod-btn" data-val="K" data-desc="Keep Highest — keep only the N highest dice">K</button>
-            <button class="mod-btn" data-val="X" data-desc="Drop Highest — remove the N highest dice">X</button>
-            <button class="mod-btn" data-val="R" data-desc="Reroll — reroll every time the value is rolled">R</button>
-            <button class="mod-btn" data-val="!" data-desc="Explode — roll again and add when max is rolled">!</button>
-            <button class="mod-btn" data-val="≤" data-desc="Less or Equal — set a threshold (e.g. R≤2 rerolls 1s and 2s)">&le;</button>
-            <button class="mod-btn" data-val="≥" data-desc="Greater or Equal — set a threshold (e.g. ≥7 counts successes)">&ge;</button>
-        </div>
-        <div class="number-grid adv-mod">
-            <button class="mod-btn" data-val="k" data-desc="Keep Lowest — keep only the N lowest dice">k</button>
-            <button class="mod-btn" data-val="x" data-desc="Drop Lowest — remove the N lowest dice">x</button>
-            <button class="mod-btn" data-val="r" data-desc="Reroll Once — reroll once per die if value is rolled">r</button>
-            <button class="mod-btn" data-val="!!" data-desc="Compound — like explode, but added to the same die total">!!</button>
-            <button class="mod-btn" data-val="!p" data-desc="Penetrate — like explode, but each extra roll gets -1">!p</button>
-            <button class="mod-btn" data-val="f" data-desc="Count Failures — subtract dice meeting a threshold">f</button>
+        <button class="modifiers-toggle" id="modifiersToggle">Modifiers &#9660;</button>
+        <div class="modifiers-panel hidden" id="modifiersPanel">
+            <div class="number-grid adv-mod">
+                <button class="mod-btn" data-val="K" data-desc="Keep Highest — keep only the N highest dice">K</button>
+                <button class="mod-btn" data-val="X" data-desc="Drop Highest — remove the N highest dice">X</button>
+                <button class="mod-btn" data-val="R" data-desc="Reroll — reroll every time the value is rolled">R</button>
+                <button class="mod-btn" data-val="!" data-desc="Explode — roll again and add when max is rolled">!</button>
+                <button class="mod-btn" data-val="≤" data-desc="Less or Equal — set a threshold (e.g. R≤2 rerolls 1s and 2s)">&le;</button>
+                <button class="mod-btn" data-val="≥" data-desc="Greater or Equal — set a threshold (e.g. ≥7 counts successes)">&ge;</button>
+            </div>
+            <div class="number-grid adv-mod">
+                <button class="mod-btn" data-val="k" data-desc="Keep Lowest — keep only the N lowest dice">k</button>
+                <button class="mod-btn" data-val="x" data-desc="Drop Lowest — remove the N lowest dice">x</button>
+                <button class="mod-btn" data-val="r" data-desc="Reroll Once — reroll once per die if value is rolled">r</button>
+                <button class="mod-btn" data-val="!!" data-desc="Compound — like explode, but added to the same die total">!!</button>
+                <button class="mod-btn" data-val="!p" data-desc="Penetrate — like explode, but each extra roll gets -1">!p</button>
+                <button class="mod-btn" data-val="f" data-desc="Count Failures — subtract dice meeting a threshold">f</button>
+            </div>
         </div>
         <div class="action-row">
-            <button class="action-btn clear-btn" id="advClear">Clear</button>
-            <button class="action-btn roll-btn" id="advRoll">Roll</button>
-            <button class="action-btn fav-btn" id="advFav">&#9734;</button>
+            <button class="action-btn clear-btn" id="diceClear">Clear</button>
+            <button class="action-btn roll-btn" id="diceRoll">Roll</button>
+            <button class="action-btn fav-btn" id="diceFav">&#9734;</button>
         </div>
     </section>
 

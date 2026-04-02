@@ -214,8 +214,6 @@ header h1 {
 .die-btn.d2 { background: var(--d2); }
 .die-btn.dF { background: var(--dF); }
 
-.adv-dice .die-btn { font-size: 15px; padding: 7px 0; }
-
 /* Number buttons */
 .number-grid {
     display: flex;
@@ -235,7 +233,38 @@ header h1 {
 }
 .num-btn:active { background: #555; }
 .op-btn { color: var(--accent); font-weight: 700; }
-.adv-num .num-btn { font-size: 17px; padding: 8px 0; }
+
+
+/* Modifiers toggle & panel */
+.modifiers-toggle {
+    width: 100%;
+    padding: 8px 0;
+    margin-bottom: 4px;
+    background: #37474f;
+    border: none;
+    border-radius: 6px;
+    color: #b0bec5;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+}
+.modifiers-toggle:active { background: #546e7a; }
+.modifiers-toggle.open { background: #455a64; }
+
+.modifiers-panel {
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+    max-height: 200px;
+    opacity: 1;
+}
+.modifiers-panel.hidden {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
 
 /* Modifier buttons */
 .adv-mod { margin-bottom: 4px; }

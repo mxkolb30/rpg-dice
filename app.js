@@ -1,7 +1,6 @@
 // State
 const state = {
-    basicInput: '',
-    advInput: '',
+    input: '',
     history: JSON.parse(localStorage.getItem('critdice_history') || '[]'),
     favorites: JSON.parse(localStorage.getItem('critdice_favorites') || '[]'),
     settings: JSON.parse(localStorage.getItem('critdice_settings') || '{}'),
@@ -36,93 +35,40 @@ $$('.tab').forEach(tab => {
     });
 });
 
-// Basic dice tab
-function updateBasicDisplay() {
-    const el = $('#basicInput');
-    if (state.basicInput) {
-        el.textContent = state.basicInput;
+// Dice tab
+function updateDisplay() {
+    const el = $('#diceInput');
+    const hint = $('#diceHint');
+    if (state.input) {
+        el.textContent = state.input;
         el.classList.remove('placeholder');
+        hint.textContent = describeFormula(state.input);
     } else {
         el.textContent = 'Tap a die to roll';
         el.classList.add('placeholder');
+        hint.textContent = '';
     }
 }
 
 $('#dice').querySelectorAll('.die-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        state.basicInput += btn.dataset.die;
-        updateBasicDisplay();
+        state.input += btn.dataset.die;
+        updateDisplay();
     });
 });
 
 $('#dice').querySelectorAll('.num-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        state.basicInput += btn.dataset.val;
-        updateBasicDisplay();
+        state.input += btn.dataset.val;
+        updateDisplay();
     });
 });
 
-$('#basicBackspace').addEventListener('click', () => {
-    // Remove last token intelligently
-    const input = state.basicInput;
-    if (!input) return;
-    // Try to remove a dice token like "d100", "d20", etc
-    const m = input.match(/(d\d+|dF)$/i);
-    if (m) {
-        state.basicInput = input.slice(0, -m[0].length);
-    } else {
-        state.basicInput = input.slice(0, -1);
-    }
-    updateBasicDisplay();
-});
-
-$('#basicClear').addEventListener('click', () => {
-    state.basicInput = '';
-    $('#basicResult').innerHTML = '';
-    updateBasicDisplay();
-});
-
-$('#basicRoll').addEventListener('click', () => {
-    doRoll(state.basicInput, 'basic');
-});
-
-$('#basicFav').addEventListener('click', () => {
-    if (!state.basicInput) return;
-    openFavModal(state.basicInput);
-});
-
-// Advanced dice tab
-function updateAdvDisplay() {
-    const el = $('#advInput');
-    if (state.advInput) {
-        el.textContent = state.advInput;
-        el.classList.remove('placeholder');
-        $('#advHint').textContent = describeFormula(state.advInput);
-    } else {
-        el.textContent = 'Tap dice & modifiers';
-        el.classList.add('placeholder');
-        $('#advHint').textContent = '';
-    }
-}
-
-$('#advanced').querySelectorAll('.die-btn').forEach(btn => {
+// Modifier buttons
+$('#dice').querySelectorAll('.mod-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        state.advInput += btn.dataset.die;
-        updateAdvDisplay();
-    });
-});
-
-$('#advanced').querySelectorAll('.num-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        state.advInput += btn.dataset.val;
-        updateAdvDisplay();
-    });
-});
-
-$('#advanced').querySelectorAll('.mod-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        state.advInput += btn.dataset.val;
-        updateAdvDisplay();
+        state.input += btn.dataset.val;
+        updateDisplay();
     });
 
     // Tooltip on hover/long-press
@@ -148,62 +94,70 @@ $('#advanced').querySelectorAll('.mod-btn').forEach(btn => {
 
     btn.addEventListener('mouseenter', () => showTooltip(btn));
     btn.addEventListener('mouseleave', removeTooltip);
-    btn.addEventListener('touchstart', (e) => {
+    btn.addEventListener('touchstart', () => {
         longPressTimer = setTimeout(() => showTooltip(btn), 400);
     }, { passive: true });
     btn.addEventListener('touchend', removeTooltip);
     btn.addEventListener('touchcancel', removeTooltip);
 });
 
-$('#advBackspace').addEventListener('click', () => {
-    const input = state.advInput;
+// Modifiers toggle
+$('#modifiersToggle').addEventListener('click', () => {
+    const panel = $('#modifiersPanel');
+    const toggle = $('#modifiersToggle');
+    panel.classList.toggle('hidden');
+    const open = !panel.classList.contains('hidden');
+    toggle.classList.toggle('open', open);
+    toggle.innerHTML = open ? 'Modifiers &#9650;' : 'Modifiers &#9660;';
+});
+
+$('#diceBackspace').addEventListener('click', () => {
+    const input = state.input;
     if (!input) return;
-    // Try multi-char tokens
     for (const tok of ['d100', '!!', '!p', 'dF']) {
         if (input.endsWith(tok)) {
-            state.advInput = input.slice(0, -tok.length);
-            updateAdvDisplay();
+            state.input = input.slice(0, -tok.length);
+            updateDisplay();
             return;
         }
     }
     const m = input.match(/d\d+$/);
     if (m) {
-        state.advInput = input.slice(0, -m[0].length);
+        state.input = input.slice(0, -m[0].length);
     } else {
-        state.advInput = input.slice(0, -1);
+        state.input = input.slice(0, -1);
     }
-    updateAdvDisplay();
+    updateDisplay();
 });
 
-$('#advClear').addEventListener('click', () => {
-    state.advInput = '';
-    $('#advResult').innerHTML = '';
-    updateAdvDisplay();
+$('#diceClear').addEventListener('click', () => {
+    state.input = '';
+    $('#diceResult').innerHTML = '';
+    updateDisplay();
 });
 
-$('#advRoll').addEventListener('click', () => {
-    doRoll(state.advInput, 'advanced');
+$('#diceRoll').addEventListener('click', () => {
+    doRoll(state.input);
 });
 
-$('#advFav').addEventListener('click', () => {
-    if (!state.advInput) return;
-    openFavModal(state.advInput);
+$('#diceFav').addEventListener('click', () => {
+    if (!state.input) return;
+    openFavModal(state.input);
 });
 
 // Rolling
-function doRoll(formula, tab) {
+function doRoll(formula) {
     if (!formula) return;
     try {
         const result = rollFormula(formula);
-        displayResult(result, tab === 'basic' ? '#basicResult' : '#advResult');
+        displayResult(result, '#diceResult');
         addHistory(result);
 
         if (result.isCrit) playSound(state.settings.critSound);
         else if (result.isFumble) playSound(state.settings.fumbleSound);
         else playSound(state.settings.rollSound);
     } catch (e) {
-        const target = tab === 'basic' ? '#basicResult' : '#advResult';
-        $(target).innerHTML = `<div class="result-card"><div class="result-details" style="color:#ef5350">${e.message}</div></div>`;
+        $('#diceResult').innerHTML = `<div class="result-card"><div class="result-details" style="color:#ef5350">${e.message}</div></div>`;
     }
 }
 
@@ -220,7 +174,6 @@ function displayResult(result, targetSel) {
             const parts = [];
             const allRolls = term.rolls;
             const droppedSet = new Set();
-            // Mark dropped rolls
             for (const d of term.dropped) {
                 for (let i = 0; i < allRolls.length; i++) {
                     if (allRolls[i] === d && !droppedSet.has(i)) {
@@ -233,7 +186,7 @@ function displayResult(result, targetSel) {
                 const v = allRolls[i];
                 let cls = 'roll-kept';
                 if (droppedSet.has(i)) cls = 'roll-dropped';
-                else if (i >= term.count) cls = 'roll-added'; // exploded
+                else if (i >= term.count) cls = 'roll-added';
                 else if (!term.isFate && v === term.sides) cls = 'roll-crit';
                 else if (!term.isFate && v === 1) cls = 'roll-fumble';
 
@@ -348,7 +301,6 @@ function openFavModal(formula) {
     $('#favFormula').textContent = formula;
     $('#favName').value = '';
     $('#favCategory').value = '';
-    // Populate category datalist
     const cats = [...new Set(state.favorites.map(f => f.category).filter(Boolean))];
     $('#categoryList').innerHTML = cats.map(c => `<option value="${c}">`).join('');
     $('#favModal').classList.remove('hidden');
@@ -382,7 +334,6 @@ function renderFavorites() {
     }
     empty.classList.add('hidden');
 
-    // Group by category
     const groups = {};
     for (const fav of state.favorites) {
         const cat = fav.category || 'Uncategorized';
@@ -417,15 +368,15 @@ window.rollFavorite = function(id) {
     const fav = state.favorites.find(f => f.id === id);
     if (!fav) return;
 
-    // Switch to basic tab and roll
+    // Switch to dice tab and roll
     $$('.tab').forEach(t => t.classList.remove('active'));
     $$('.tab-content').forEach(t => t.classList.remove('active'));
     $$('.tab')[0].classList.add('active');
     $('#dice').classList.add('active');
 
-    state.basicInput = fav.formula;
-    updateBasicDisplay();
-    doRoll(fav.formula, 'basic');
+    state.input = fav.formula;
+    updateDisplay();
+    doRoll(fav.formula);
 };
 
 window.deleteFavorite = function(id) {
@@ -481,14 +432,12 @@ document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT') return;
     if (e.key === 'Enter') {
         const activeTab = $('.tab.active').dataset.tab;
-        if (activeTab === 'dice') doRoll(state.basicInput, 'basic');
-        else if (activeTab === 'advanced') doRoll(state.advInput, 'advanced');
+        if (activeTab === 'dice') doRoll(state.input);
     }
 });
 
 // Init
-updateBasicDisplay();
-updateAdvDisplay();
+updateDisplay();
 renderHistory();
 renderFavorites();
 
