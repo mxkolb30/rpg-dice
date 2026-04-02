@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>OpenDice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>OpenDice</h1>
+        <button id="settingsBtn" class="icon-btn" title="Settings">&#9881;</button>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab active" data-tab="dice">Dice</button>
+        <button class="tab" data-tab="advanced">Advanced</button>
+        <button class="tab" data-tab="favorites">Favorites</button>
+        <button class="tab" data-tab="history">History</button>
+    </nav>
+
+    <!-- Basic Dice Tab -->
+    <section id="dice" class="tab-content active">
+        <div class="input-row">
+            <div class="input-display" id="basicInput">Tap a die to roll</div>
+            <button class="backspace-btn" id="basicBackspace">&#9003;</button>
+        </div>
+        <div class="result-area" id="basicResult"></div>
+        <div class="dice-grid basic-dice">
+            <button class="die-btn d100" data-die="d100">d100</button>
+            <button class="die-btn d20" data-die="d20">d20</button>
+            <button class="die-btn d12" data-die="d12">d12</button>
+            <button class="die-btn d10" data-die="d10">d10</button>
+        </div>
+        <div class="dice-grid basic-dice">
+            <button class="die-btn d8" data-die="d8">d8</button>
+            <button class="die-btn d6" data-die="d6">d6</button>
+            <button class="die-btn d4" data-die="d4">d4</button>
+            <button class="die-btn d3" data-die="d3">d3</button>
+            <button class="die-btn d2" data-die="d2">d2</button>
+        </div>
+        <div class="number-grid">
+            <button class="num-btn" data-val="7">7</button>
+            <button class="num-btn" data-val="8">8</button>
+            <button class="num-btn" data-val="9">9</button>
+        </div>
+        <div class="number-grid">
+            <button class="num-btn" data-val="4">4</button>
+            <button class="num-btn" data-val="5">5</button>
+            <button class="num-btn" data-val="6">6</button>
+        </div>
+        <div class="number-grid">
+            <button class="num-btn" data-val="1">1</button>
+            <button class="num-btn" data-val="2">2</button>
+            <button class="num-btn" data-val="3">3</button>
+        </div>
+        <div class="number-grid">
+            <button class="num-btn op-btn" data-val="-">&minus;</button>
+            <button class="num-btn" data-val="0">0</button>
+            <button class="num-btn op-btn" data-val="+">+</button>
+        </div>
+        <div class="action-row">
+            <button class="action-btn clear-btn" id="basicClear">Clear</button>
+            <button class="action-btn roll-btn" id="basicRoll">Roll</button>
+            <button class="action-btn fav-btn" id="basicFav">&#9734;</button>
+        </div>
+    </section>
+
+    <!-- Advanced Dice Tab -->
+    <section id="advanced" class="tab-content">
+        <div class="input-row">
+            <div class="input-display" id="advInput">Tap dice &amp; modifiers</div>
+            <button class="backspace-btn" id="advBackspace">&#9003;</button>
+        </div>
+        <div class="hint-label" id="advHint"></div>
+        <div class="result-area" id="advResult"></div>
+        <div class="dice-grid adv-dice">
+            <button class="die-btn d100" data-die="d100">d100</button>
+            <button class="die-btn d20" data-die="d20">d20</button>
+            <button class="die-btn d12" data-die="d12">d12</button>
+            <button class="die-btn d10" data-die="d10">d10</button>
+            <button class="die-btn d8" data-die="d8">d8</button>
+        </div>
+        <div class="dice-grid adv-dice">
+            <button class="die-btn d6" data-die="d6">d6</button>
+            <button class="die-btn d4" data-die="d4">d4</button>
+            <button class="die-btn d3" data-die="d3">d3</button>
+            <button class="die-btn d2" data-die="d2">d2</button>
+            <button class="die-btn dF" data-die="dF">dF</button>
+        </div>
+        <div class="number-grid adv-num">
+            <button class="num-btn" data-val="1">1</button>
+            <button class="num-btn" data-val="2">2</button>
+            <button class="num-btn" data-val="3">3</button>
+            <button class="num-btn" data-val="4">4</button>
+            <button class="num-btn" data-val="5">5</button>
+            <button class="num-btn" data-val="6">6</button>
+        </div>
+        <div class="number-grid adv-num">
+            <button class="num-btn" data-val="7">7</button>
+            <button class="num-btn" data-val="8">8</button>
+            <button class="num-btn" data-val="9">9</button>
+            <button class="num-btn" data-val="0">0</button>
+            <button class="num-btn op-btn" data-val="-">&minus;</button>
+            <button class="num-btn op-btn" data-val="+">+</button>
+        </div>
+        <div class="number-grid adv-mod">
+            <button class="mod-btn" data-val="K" data-desc="Keep Highest — keep only the N highest dice">K</button>
+            <button class="mod-btn" data-val="X" data-desc="Drop Highest — remove the N highest dice">X</button>
+            <button class="mod-btn" data-val="R" data-desc="Reroll — reroll every time the value is rolled">R</button>
+            <button class="mod-btn" data-val="!" data-desc="Explode — roll again and add when max is rolled">!</button>
+            <button class="mod-btn" data-val="≤" data-desc="Less or Equal — set a threshold (e.g. R≤2 rerolls 1s and 2s)">&le;</button>
+            <button class="mod-btn" data-val="≥" data-desc="Greater or Equal — set a threshold (e.g. ≥7 counts successes)">&ge;</button>
+        </div>
+        <div class="number-grid adv-mod">
+            <button class="mod-btn" data-val="k" data-desc="Keep Lowest — keep only the N lowest dice">k</button>
+            <button class="mod-btn" data-val="x" data-desc="Drop Lowest — remove the N lowest dice">x</button>
+            <button class="mod-btn" data-val="r" data-desc="Reroll Once — reroll once per die if value is rolled">r</button>
+            <button class="mod-btn" data-val="!!" data-desc="Compound — like explode, but added to the same die total">!!</button>
+            <button class="mod-btn" data-val="!p" data-desc="Penetrate — like explode, but each extra roll gets -1">!p</button>
+            <button class="mod-btn" data-val="f" data-desc="Count Failures — subtract dice meeting a threshold">f</button>
+        </div>
+        <div class="action-row">
+            <button class="action-btn clear-btn" id="advClear">Clear</button>
+            <button class="action-btn roll-btn" id="advRoll">Roll</button>
+            <button class="action-btn fav-btn" id="advFav">&#9734;</button>
+        </div>
+    </section>
+
+    <!-- Favorites Tab -->
+    <section id="favorites" class="tab-content">
+        <div class="empty-state" id="favEmpty">
+            <div class="empty-icon">&#9734;</div>
+            <p>No favorites yet. Save a roll by tapping &#9734; after entering a formula.</p>
+        </div>
+        <div id="favList" class="fav-list"></div>
+    </section>
+
+    <!-- History Tab -->
+    <section id="history" class="tab-content">
+        <div class="history-header" id="historyHeader" style="display:none">
+            <button class="text-btn" id="clearHistory">Clear History</button>
+        </div>
+        <div class="empty-state" id="histEmpty">
+            <div class="empty-icon">&#8634;</div>
+            <p>No previous rolls.</p>
+        </div>
+        <div id="histList" class="hist-list"></div>
+    </section>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" id="closeSettings">&times;</button>
+            </div>
+            <label class="setting-row">
+                <span>Mute all sounds</span>
+                <input type="checkbox" id="muteSounds">
+            </label>
+            <label class="setting-row">
+                <span>Roll sound</span>
+                <select id="rollSound">
+                    <option value="roll_dice_1">Dice Roll 1</option>
+                    <option value="roll_dice_2">Dice Roll 2</option>
+                    <option value="roll_dice_3">Dice Roll 3</option>
+                    <option value="none">None</option>
+                </select>
+            </label>
+            <label class="setting-row">
+                <span>Critical sound</span>
+                <select id="critSound">
+                    <option value="tada">Tada</option>
+                    <option value="applause_1">Applause</option>
+                    <option value="bullseye">Bullseye</option>
+                    <option value="none">None</option>
+                </select>
+            </label>
+            <label class="setting-row">
+                <span>Fumble sound</span>
+                <select id="fumbleSound">
+                    <option value="sad_trombone">Sad Trombone</option>
+                    <option value="aww">Aww</option>
+                    <option value="crickets">Crickets</option>
+                    <option value="none">None</option>
+                </select>
+            </label>
+            <label class="setting-row">
+                <span>Keep screen awake</span>
+                <input type="checkbox" id="keepAwake">
+            </label>
+        </div>
+    </div>
+
+    <!-- Save Favorite Modal -->
+    <div id="favModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Save Favorite</h2>
+                <button class="modal-close" id="closeFavModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>
+                    <span>Name</span>
+                    <input type="text" id="favName" placeholder="e.g. Fireball Damage">
+                </label>
+                <label>
+                    <span>Category</span>
+                    <input type="text" id="favCategory" placeholder="e.g. Spells" list="categoryList">
+                    <datalist id="categoryList"></datalist>
+                </label>
+                <div class="fav-formula" id="favFormula"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="action-btn clear-btn" id="cancelFav">Cancel</button>
+                <button class="action-btn roll-btn" id="saveFav">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dice.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
