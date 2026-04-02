@@ -485,7 +485,7 @@ header h1 {
 .text-btn:active { opacity: 0.6; }
 
 .hist-list { display: flex; flex-direction: column; gap: 4px; }
-.hist-item { cursor: default; }
+.hist-item { cursor: pointer; }
 .hist-result {
     background: var(--accent);
     color: #fff;

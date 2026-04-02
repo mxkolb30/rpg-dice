@@ -558,7 +558,7 @@ function renderHistory() {
             }).join(' ');
         }
         return `
-            <div class="hist-item">
+            <div class="hist-item" onclick="rollHistory(${i})">
                 <div class="hist-result${critClass}">${h.total}</div>
                 <div class="hist-info">
                     <div class="hist-formula">${h.formula}</div>
@@ -569,6 +569,21 @@ function renderHistory() {
         `;
     }).join('');
 }
+
+window.rollHistory = function(i) {
+    const h = state.history[i];
+    if (!h) return;
+
+    // Switch to dice tab and roll
+    $$('.tab').forEach(t => t.classList.remove('active'));
+    $$('.tab-content').forEach(t => t.classList.remove('active'));
+    $$('.tab')[0].classList.add('active');
+    $('#dice').classList.add('active');
+
+    state.input = h.formula;
+    updateDisplay();
+    doRoll(h.formula);
+};
 
 $('#clearHistory').addEventListener('click', () => {
     if (confirm('Clear all history?')) {
