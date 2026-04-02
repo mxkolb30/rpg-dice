@@ -6,13 +6,19 @@
     <title>OpenDice</title>
     <meta name="theme-color" content="#313131">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>OpenDice</h1>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l9 5v10l-9 5-9-5V7l9-5z" />
+                <path d="M12 2v6m0 0l-9-1m9 1l9-1m-9 1l-5 7m5-7l5 7m-10 0h10m-10 0l-4 2m4-2l5 5m5-7l4 2m-4-2l-5 5" />
+            </svg>
+            <h1>OpenDice</h1>
+        </div>
         <button id="settingsBtn" class="icon-btn" title="Settings">&#9881;</button>
     </header>
 

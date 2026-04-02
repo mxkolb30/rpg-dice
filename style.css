@@ -75,6 +75,12 @@ header h1 {
     font-weight: 500;
 }
 
+.header-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--accent);
+}
+
 .icon-btn {
     background: none;
     border: none;
