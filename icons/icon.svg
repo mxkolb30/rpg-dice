@@ -1,9 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="64" fill="#313131"/>
-  <rect x="96" y="96" width="320" height="320" rx="48" fill="#424242" stroke="#2196f3" stroke-width="12"/>
-  <circle cx="176" cy="176" r="28" fill="#e0e0e0"/>
-  <circle cx="336" cy="176" r="28" fill="#e0e0e0"/>
-  <circle cx="256" cy="256" r="28" fill="#e0e0e0"/>
-  <circle cx="176" cy="336" r="28" fill="#e0e0e0"/>
-  <circle cx="336" cy="336" r="28" fill="#e0e0e0"/>
+  <polygon points="256,80 440,400 72,400" fill="#424242" stroke="#2196f3" stroke-width="12" stroke-linejoin="round"/>
+  <text x="256" y="340" text-anchor="middle" font-family="sans-serif" font-size="160" font-weight="bold" fill="#e0e0e0">4</text>
 </svg>
