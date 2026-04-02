@@ -1,4 +1,4 @@
-const CACHE_NAME = 'opendice-v4';
+const CACHE_NAME = 'opendice-v6';
 const BASE = self.registration.scope;
 const ASSETS = [
     '',
@@ -7,8 +7,7 @@ const ASSETS = [
     'app.js',
     'dice.js',
     'manifest.json',
-    'icons/icon-192.png',
-    'icons/icon-512.png',
+    'icons/icon.svg',
     'sounds/applause_1.mp3',
     'sounds/aww.mp3',
     'sounds/bullseye.mp3',
