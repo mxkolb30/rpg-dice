@@ -249,9 +249,25 @@ function applyButtonStates(states) {
 }
 
 // Dice tab
+function getDieTheme(formula) {
+    const match = formula.match(/d[0-9F]+/);
+    if (!match) return { bg: 'var(--accent)', text: '#fff' };
+    const die = match[0];
+    return {
+        bg: `var(--${die})`,
+        text: (die === 'd8') ? '#333' : '#fff'
+    };
+}
+
 function updateDisplay() {
     const el = $('#diceInput');
     const hint = $('#diceHint');
+    const rollBtn = $('#diceRoll');
+
+    const theme = getDieTheme(state.input);
+    rollBtn.style.backgroundColor = theme.bg;
+    rollBtn.style.color = theme.text;
+
     if (state.input) {
         el.textContent = state.input;
         el.classList.remove('placeholder');
@@ -416,6 +432,8 @@ function displayResult(result, targetSel) {
     const el = $(targetSel);
     let critClass = result.isCrit ? ' crit' : result.isFumble ? ' fumble' : '';
 
+    const theme = getDieTheme(result.formula);
+
     let rollsHtml = '';
     for (const term of result.terms) {
         if (term.type === 'constant') {
@@ -468,7 +486,7 @@ function displayResult(result, targetSel) {
 
     el.innerHTML = `
         <div class="result-card">
-            <div class="result-total${critClass} animate">${result.total}</div>
+            <div class="result-total${critClass} animate" style="background-color: ${theme.bg}; color: ${theme.text}">${result.total}</div>
             <div class="result-details">
                 <div class="formula">${result.formula}</div>
                 <div class="rolls">${rollsHtml}</div>
