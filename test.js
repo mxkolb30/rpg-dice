@@ -154,6 +154,7 @@ assert(threw, 'Empty group should throw');
 
 function simulateInput(sequence) {
     let input = '';
+    let buildingCustomDie = false;
     
     // Mimic the logic from app.js
     sequence.forEach(step => {
@@ -162,9 +163,10 @@ function simulateInput(sequence) {
         
         if (type === 'die') {
             const die = val;
+            buildingCustomDie = (die === 'd');
             const matchDie = input.match(/(\d*)(d[0-9F]+)$/);
             
-            if (matchDie) {
+            if (matchDie && die !== 'd') {
                 if (matchDie[2] === die) {
                     const count = matchDie[1] ? parseInt(matchDie[1], 10) : 1;
                     input = input.slice(0, -matchDie[0].length) + (count + 1) + die;
@@ -178,15 +180,17 @@ function simulateInput(sequence) {
             }
         } else if (type === 'num') {
             if (val === '+' || val === '-') {
+                buildingCustomDie = false;
                 input += val;
             } else {
-                if (/(?:d[0-9F]+|\))$/.test(input)) {
+                if (!buildingCustomDie && /(?:d[0-9F]+|\))$/.test(input)) {
                     input += '+' + val;
                 } else {
                     input += val;
                 }
             }
         } else {
+            buildingCustomDie = false;
             input += val;
         }
     });
@@ -215,6 +219,11 @@ assert(simulateInput([{type:'grp', val:'('}, {type:'die', val:'d6'}, {type:'grp'
 
 // Test operator + die
 assert(simulateInput([{type:'die', val:'d6'}, {type:'num', val:'+'}, {type:'die', val:'d6'}]) === 'd6+d6', 'd6 + "+" + d6 -> d6+d6');
+
+// Test custom dN dice
+assert(simulateInput([{type:'die', val:'d'}, {type:'num', val:'1'}, {type:'num', val:'3'}]) === 'd13', 'dN + 1 + 3 -> d13');
+assert(simulateInput([{type:'die', val:'d'}, {type:'num', val:'1'}, {type:'num', val:'3'}, {type:'num', val:'+'}, {type:'num', val:'5'}]) === 'd13+5', 'dN + 1 + 3 + + + 5 -> d13+5');
+assert(simulateInput([{type:'die', val:'d'}, {type:'num', val:'1'}, {type:'num', val:'3'}, {type:'die', val:'d6'}]) === 'd13+d6', 'dN + 1 + 3 + d6 -> d13+d6');
 
 // --- Summary ---
 console.log(`\n${passed} passed, ${failed} failed`);

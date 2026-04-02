@@ -6,6 +6,7 @@ if ('serviceWorker' in navigator) {
 // State
 const state = {
     input: '',
+    buildingCustomDie: false,
     history: JSON.parse(localStorage.getItem('critdice_history') || '[]'),
     favorites: JSON.parse(localStorage.getItem('critdice_favorites') || '[]'),
     settings: JSON.parse(localStorage.getItem('critdice_settings') || '{}'),
@@ -253,9 +254,11 @@ function getDieTheme(formula) {
     const match = formula.match(/d[0-9F]+/);
     if (!match) return { bg: 'var(--accent)', text: '#fff' };
     const die = match[0];
+    const knownDice = ['d100', 'd20', 'd12', 'd10', 'd8', 'd6', 'd4', 'd3', 'd2', 'dF'];
+    const themeDie = knownDice.includes(die) ? die : 'dN';
     return {
-        bg: `var(--${die})`,
-        text: (die === 'd8') ? '#333' : '#fff'
+        bg: `var(--${themeDie})`,
+        text: (themeDie === 'd8') ? '#333' : '#fff'
     };
 }
 
@@ -284,9 +287,10 @@ $('#dice').querySelectorAll('.die-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.disabled) return;
         const die = btn.dataset.die;
+        state.buildingCustomDie = (die === 'd');
         const matchDie = state.input.match(/(\d*)(d[0-9F]+)$/);
         
-        if (matchDie) {
+        if (matchDie && die !== 'd') {
             if (matchDie[2] === die) {
                 const count = matchDie[1] ? parseInt(matchDie[1], 10) : 1;
                 state.input = state.input.slice(0, -matchDie[0].length) + (count + 1) + die;
@@ -307,9 +311,10 @@ $('#dice').querySelectorAll('.num-btn').forEach(btn => {
         if (btn.disabled) return;
         const val = btn.dataset.val;
         if (val === '+' || val === '-') {
+            state.buildingCustomDie = false;
             state.input += val;
         } else {
-            if (/(?:d[0-9F]+|\))$/.test(state.input)) {
+            if (!state.buildingCustomDie && /(?:d[0-9F]+|\))$/.test(state.input)) {
                 state.input += '+' + val;
             } else {
                 state.input += val;
@@ -323,6 +328,7 @@ $('#dice').querySelectorAll('.num-btn').forEach(btn => {
 $('#dice').querySelectorAll('.grp-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.disabled) return;
+        state.buildingCustomDie = false;
         state.input += btn.dataset.val;
         updateDisplay();
     });
@@ -332,6 +338,7 @@ $('#dice').querySelectorAll('.grp-btn').forEach(btn => {
 $('#dice').querySelectorAll('.mod-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.disabled) return;
+        state.buildingCustomDie = false;
         state.input += btn.dataset.val;
         updateDisplay();
     });
@@ -379,6 +386,7 @@ $('#modifiersToggle').addEventListener('click', () => {
 $('#diceBackspace').addEventListener('click', () => {
     const input = state.input;
     if (!input) return;
+    state.buildingCustomDie = false;
     for (const tok of ['d100', '!!', '!p', 'dF']) {
         if (input.endsWith(tok)) {
             state.input = input.slice(0, -tok.length);
@@ -397,6 +405,7 @@ $('#diceBackspace').addEventListener('click', () => {
 
 $('#diceClear').addEventListener('click', () => {
     state.input = '';
+    state.buildingCustomDie = false;
     $('#diceResult').innerHTML = '';
     updateDisplay();
 });

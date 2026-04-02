@@ -20,6 +20,7 @@
     --d3: #673ab7;
     --d2: #3f51b5;
     --dF: #795548;
+    --dN: #757575;
 }
 
 html, body {
@@ -254,6 +255,7 @@ header h1 {
 .die-btn.d3 { background: var(--d3); }
 .die-btn.d2 { background: var(--d2); }
 .die-btn.dF { background: var(--dF); }
+.die-btn.dN { background: var(--dN); }
 
 /* Number buttons */
 .number-grid {
