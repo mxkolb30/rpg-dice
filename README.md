@@ -2,7 +2,9 @@
 
 RpgDice is a responsive web-based dice roller for tabletop RPGs. It features a Material Design interface optimized for both mobile and desktop use.
 
-![RpgDice Screenshot](screenshot.png)
+![RpgDice Main Screen](screenshot.png)
+![RpgDice Favorites](screenshot-fav.png)
+![RpgDice History](screenshot-history.png)
 
 ## Features
 
