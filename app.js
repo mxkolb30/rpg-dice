@@ -40,6 +40,171 @@ $$('.tab').forEach(tab => {
     });
 });
 
+// Button state machine
+function getButtonStates(input) {
+    const s = {
+        dice: false, digits: false, operators: false,
+        K: false, k: false, X: false, x: false,
+        R: false, r: false,
+        bang: false, bangbang: false, bangp: false,
+        compare: false, f: false,
+    };
+
+    if (!input) {
+        s.dice = true; s.digits = true;
+        return s;
+    }
+
+    const lastChar = input[input.length - 1];
+
+    // After an operator: start a new term
+    if (lastChar === '+' || lastChar === '-') {
+        s.dice = true; s.digits = true;
+        return s;
+    }
+
+    // Extract current term (after last +/- separator)
+    // Mirrors parseDiceExpr splitting logic from dice.js
+    let termStart = 0;
+    let cur = '';
+    for (let i = 0; i < input.length; i++) {
+        const ch = input[i];
+        if ((ch === '+' || ch === '-') && cur.length > 0 && !cur.match(/[KkXxRr!≤≥f]$/)) {
+            termStart = i + 1;
+            cur = '';
+        } else {
+            cur += ch;
+        }
+    }
+    const term = input.slice(termStart);
+
+    // Check if this term has a die in it
+    const dMatch = term.match(/d(F|\d*)(.*)/i);
+
+    if (!dMatch) {
+        // Bare constant (e.g. "5", "12") — can continue number, start new term, or start a die
+        s.dice = true; s.digits = true; s.operators = true;
+        return s;
+    }
+
+    const sidesStr = dMatch[1];
+    const modifiers = dMatch[2];
+
+    // Incomplete die: ends with bare "d" (no sides yet)
+    if (!sidesStr) {
+        s.digits = true;
+        return s;
+    }
+
+    // Complete die term — determine modifier context
+    // Check which modifier groups are already used (scan modifier region)
+    const hasKeepDrop = /[KkXx]/.test(modifiers);
+    // Check !! and !p before bare !
+    const hasExplode = /!!|!p|!/.test(modifiers);
+    const hasReroll = /[Rr]/.test(modifiers);
+    const hasFailure = /f/.test(modifiers);
+
+    // Helper: enable unused modifier groups
+    function enableUnusedMods() {
+        if (!hasKeepDrop) { s.K = true; s.k = true; s.X = true; s.x = true; }
+        if (!hasExplode) { s.bang = true; s.bangbang = true; s.bangp = true; }
+        if (!hasReroll) { s.R = true; s.r = true; }
+        if (!hasFailure) { s.f = true; }
+    }
+
+    if (!modifiers) {
+        // Complete die, no modifiers yet: everything available
+        s.dice = true; s.digits = true; s.operators = true;
+        s.compare = true;
+        enableUnusedMods();
+        return s;
+    }
+
+    // Classify what the modifier region ends with
+    if (lastChar === '≤' || lastChar === '≥') {
+        // After comparison: only digits
+        s.digits = true;
+        return s;
+    }
+
+    if (lastChar === 'K' || lastChar === 'k' || lastChar === 'X' || lastChar === 'x') {
+        // After keep/drop modifier: digits (optional count), operators, dice, remaining mods
+        s.dice = true; s.digits = true; s.operators = true;
+        enableUnusedMods();
+        // Disable the keep/drop group since one is now active
+        s.K = false; s.k = false; s.X = false; s.x = false;
+        return s;
+    }
+
+    if (lastChar === 'R' || lastChar === 'r') {
+        // After reroll: digits, compare (for threshold), operators, dice, remaining mods
+        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        enableUnusedMods();
+        s.R = false; s.r = false;
+        return s;
+    }
+
+    if (modifiers.endsWith('!!') || modifiers.endsWith('!p')) {
+        // After compound/penetrate
+        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        enableUnusedMods();
+        s.bang = false; s.bangbang = false; s.bangp = false;
+        return s;
+    }
+
+    if (lastChar === '!') {
+        // After single explode
+        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        enableUnusedMods();
+        s.bang = false; s.bangbang = false; s.bangp = false;
+        return s;
+    }
+
+    if (lastChar === 'f') {
+        // After failure count
+        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        enableUnusedMods();
+        s.f = false;
+        return s;
+    }
+
+    // Ends with a digit (in modifier or sides context)
+    if (/\d/.test(lastChar)) {
+        s.dice = true; s.digits = true; s.operators = true;
+        enableUnusedMods();
+        return s;
+    }
+
+    // Fallback: allow dice and digits
+    s.dice = true; s.digits = true;
+    return s;
+}
+
+function applyButtonStates(states) {
+    $$('#dice .die-btn').forEach(btn => {
+        btn.disabled = !states.dice;
+    });
+    $$('#dice .num-btn').forEach(btn => {
+        const val = btn.dataset.val;
+        if (val === '+' || val === '-') {
+            btn.disabled = !states.operators;
+        } else {
+            btn.disabled = !states.digits;
+        }
+    });
+    const modMap = {
+        'K': 'K', 'k': 'k', 'X': 'X', 'x': 'x',
+        'R': 'R', 'r': 'r',
+        '!': 'bang', '!!': 'bangbang', '!p': 'bangp',
+        '≤': 'compare', '≥': 'compare',
+        'f': 'f',
+    };
+    $$('#dice .mod-btn').forEach(btn => {
+        const key = modMap[btn.dataset.val];
+        btn.disabled = key ? !states[key] : true;
+    });
+}
+
 // Dice tab
 function updateDisplay() {
     const el = $('#diceInput');
@@ -53,10 +218,12 @@ function updateDisplay() {
         el.classList.add('placeholder');
         hint.textContent = '';
     }
+    applyButtonStates(getButtonStates(state.input));
 }
 
 $('#dice').querySelectorAll('.die-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+        if (btn.disabled) return;
         state.input += btn.dataset.die;
         updateDisplay();
     });
@@ -64,6 +231,7 @@ $('#dice').querySelectorAll('.die-btn').forEach(btn => {
 
 $('#dice').querySelectorAll('.num-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+        if (btn.disabled) return;
         state.input += btn.dataset.val;
         updateDisplay();
     });
@@ -72,6 +240,7 @@ $('#dice').querySelectorAll('.num-btn').forEach(btn => {
 // Modifier buttons
 $('#dice').querySelectorAll('.mod-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+        if (btn.disabled) return;
         state.input += btn.dataset.val;
         updateDisplay();
     });

@@ -282,6 +282,14 @@ header h1 {
 }
 .mod-btn:active { background: #546e7a; }
 
+.die-btn:disabled,
+.num-btn:disabled,
+.mod-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+}
+
 /* Modifier tooltips */
 .mod-tooltip {
     position: fixed;
