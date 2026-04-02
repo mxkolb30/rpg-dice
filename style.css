@@ -396,7 +396,7 @@ header h1 {
     cursor: pointer;
     text-transform: uppercase;
 }
-.clear-btn { background: var(--bg-card); color: var(--text); }
+.clear-btn { background: var(--bg-card); color: var(--text); flex: 0 0 56px; font-size: 24px; }
 .clear-btn:active { background: #555; }
 .roll-btn { background: var(--accent); color: #fff; flex: 2; }
 .roll-btn:active { background: var(--accent-dark); }
