@@ -150,6 +150,72 @@ threw = false;
 try { rollFormula('()K'); } catch { threw = true; }
 assert(threw, 'Empty group should throw');
 
+// --- Smart Input Grouping ---
+
+function simulateInput(sequence) {
+    let input = '';
+    
+    // Mimic the logic from app.js
+    sequence.forEach(step => {
+        const type = step.type; // 'die' or 'num' or 'grp' or 'mod'
+        const val = step.val;
+        
+        if (type === 'die') {
+            const die = val;
+            const matchDie = input.match(/(\d*)(d[0-9F]+)$/);
+            
+            if (matchDie) {
+                if (matchDie[2] === die) {
+                    const count = matchDie[1] ? parseInt(matchDie[1], 10) : 1;
+                    input = input.slice(0, -matchDie[0].length) + (count + 1) + die;
+                } else {
+                    input += '+' + die;
+                }
+            } else if (input === '' || /[+\-(,]$/.test(input) || /(?:^|[+\-(,])\d+$/.test(input)) {
+                input += die;
+            } else {
+                input += '+' + die;
+            }
+        } else if (type === 'num') {
+            if (val === '+' || val === '-') {
+                input += val;
+            } else {
+                if (/(?:d[0-9F]+|\))$/.test(input)) {
+                    input += '+' + val;
+                } else {
+                    input += val;
+                }
+            }
+        } else {
+            input += val;
+        }
+    });
+    
+    return input;
+}
+
+// Test die + die (same)
+assert(simulateInput([{type:'die', val:'d6'}, {type:'die', val:'d6'}]) === '2d6', 'd6 + d6 -> 2d6');
+assert(simulateInput([{type:'die', val:'d6'}, {type:'die', val:'d6'}, {type:'die', val:'d6'}]) === '3d6', 'd6 + d6 + d6 -> 3d6');
+
+// Test die + die (different)
+assert(simulateInput([{type:'die', val:'d6'}, {type:'die', val:'d20'}]) === 'd6+d20', 'd6 + d20 -> d6+d20');
+
+// Test num + die
+assert(simulateInput([{type:'num', val:'5'}, {type:'die', val:'d6'}]) === '5d6', '5 + d6 -> 5d6');
+
+// Test die + num
+assert(simulateInput([{type:'die', val:'d6'}, {type:'num', val:'5'}]) === 'd6+5', 'd6 + 5 -> d6+5');
+
+// Test die + modifier + die
+assert(simulateInput([{type:'die', val:'d6'}, {type:'mod', val:'!'}, {type:'die', val:'d6'}]) === 'd6!+d6', 'd6! + d6 -> d6!+d6');
+
+// Test group + die
+assert(simulateInput([{type:'grp', val:'('}, {type:'die', val:'d6'}, {type:'grp', val:')'}, {type:'die', val:'d6'}]) === '(d6)+d6', '(d6) + d6 -> (d6)+d6');
+
+// Test operator + die
+assert(simulateInput([{type:'die', val:'d6'}, {type:'num', val:'+'}, {type:'die', val:'d6'}]) === 'd6+d6', 'd6 + "+" + d6 -> d6+d6');
+
 // --- Summary ---
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);

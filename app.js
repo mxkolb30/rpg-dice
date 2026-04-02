@@ -267,7 +267,21 @@ function updateDisplay() {
 $('#dice').querySelectorAll('.die-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.disabled) return;
-        state.input += btn.dataset.die;
+        const die = btn.dataset.die;
+        const matchDie = state.input.match(/(\d*)(d[0-9F]+)$/);
+        
+        if (matchDie) {
+            if (matchDie[2] === die) {
+                const count = matchDie[1] ? parseInt(matchDie[1], 10) : 1;
+                state.input = state.input.slice(0, -matchDie[0].length) + (count + 1) + die;
+            } else {
+                state.input += '+' + die;
+            }
+        } else if (state.input === '' || /[+\-(,]$/.test(state.input) || /(?:^|[+\-(,])\d+$/.test(state.input)) {
+            state.input += die;
+        } else {
+            state.input += '+' + die;
+        }
         updateDisplay();
     });
 });
@@ -275,7 +289,16 @@ $('#dice').querySelectorAll('.die-btn').forEach(btn => {
 $('#dice').querySelectorAll('.num-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.disabled) return;
-        state.input += btn.dataset.val;
+        const val = btn.dataset.val;
+        if (val === '+' || val === '-') {
+            state.input += val;
+        } else {
+            if (/(?:d[0-9F]+|\))$/.test(state.input)) {
+                state.input += '+' + val;
+            } else {
+                state.input += val;
+            }
+        }
         updateDisplay();
     });
 });
