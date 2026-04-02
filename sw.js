@@ -1,4 +1,4 @@
-const CACHE_NAME = 'opendice-v1';
+const CACHE_NAME = 'opendice-v4';
 const BASE = self.registration.scope;
 const ASSETS = [
     '',
