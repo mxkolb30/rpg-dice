@@ -89,6 +89,9 @@ header h1 {
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .icon-btn:active { opacity: 0.6; }
 
@@ -175,6 +178,9 @@ header h1 {
     cursor: pointer;
     flex-shrink: 0;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .backspace-btn:active { opacity: 0.6; }
 
@@ -410,12 +416,33 @@ header h1 {
     cursor: pointer;
     text-transform: uppercase;
 }
-.clear-btn { background: var(--bg-card); color: var(--text); flex: 0 0 56px; font-size: 24px; }
+.clear-btn { 
+    background: var(--bg-card); 
+    color: var(--text); 
+    flex: 0 0 56px; 
+    font-size: 24px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .clear-btn:active { background: #555; }
 .roll-btn { background: var(--accent); color: #fff; flex: 2; }
 .roll-btn:active { background: var(--accent-dark); }
-.fav-btn { background: var(--bg-card); color: var(--text); flex: 0 0 56px; font-size: 24px; }
+.fav-btn { 
+    background: var(--bg-card); 
+    color: var(--text); 
+    flex: 0 0 56px; 
+    font-size: 24px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .fav-btn:active { background: #555; }
+
+.btn-icon {
+    width: 24px;
+    height: 24px;
+}
 
 /* Favorites */
 .fav-list { display: flex; flex-direction: column; gap: 8px; }

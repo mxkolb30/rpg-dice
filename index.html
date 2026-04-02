@@ -19,14 +19,25 @@
             </svg>
             <h1>OpenDice</h1>
         </div>
-        <button id="settingsBtn" class="icon-btn" title="Settings">&#9881;</button>
+        <button id="settingsBtn" class="icon-btn" title="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
     </header>
 
     <!-- Dice Tab -->
     <section id="dice" class="tab-content active">
         <div class="input-row">
             <div class="input-display" id="diceInput">Tap a die to roll</div>
-            <button class="backspace-btn" id="diceBackspace">&#9003;</button>
+            <button class="backspace-btn" id="diceBackspace" title="Backspace">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                    <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                    <line x1="18" y1="9" x2="12" y2="15"></line>
+                    <line x1="12" y1="9" x2="18" y2="15"></line>
+                </svg>
+            </button>
         </div>
         <div class="hint-label" id="diceHint"></div>
         <div class="dice-grid">
@@ -89,17 +100,30 @@
             </div>
         </div>
         <div class="action-row">
-            <button class="action-btn clear-btn" id="diceClear" title="Clear">&#128465;</button>
+            <button class="action-btn clear-btn" id="diceClear" title="Clear">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
             <button class="action-btn roll-btn" id="diceRoll">Roll</button>
-            <button class="action-btn fav-btn" id="diceFav" title="Favorite">&#9734;</button>
+            <button class="action-btn fav-btn" id="diceFav" title="Favorite">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </button>
         </div>
     </section>
 
     <!-- Favorites Tab -->
     <section id="favorites" class="tab-content">
         <div class="empty-state" id="favEmpty">
-            <div class="empty-icon">&#9734;</div>
-            <p>No favorites yet. Save a roll by tapping &#9734; after entering a formula.</p>
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 64px; height: 64px;">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </div>
+            <p>No favorites yet. Save a roll by tapping the star icon after entering a formula.</p>
         </div>
         <div id="favList" class="fav-list"></div>
     </section>
@@ -110,7 +134,12 @@
             <button class="text-btn" id="clearHistory">Clear History</button>
         </div>
         <div class="empty-state" id="histEmpty">
-            <div class="empty-icon">&#8634;</div>
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 64px; height: 64px;">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                </svg>
+            </div>
             <p>No previous rolls.</p>
         </div>
         <div id="histList" class="hist-list"></div>
