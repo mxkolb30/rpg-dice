@@ -506,9 +506,11 @@ function displayResult(result, targetSel) {
 
 // History
 function addHistory(result) {
+    const theme = getDieTheme(result.formula);
     state.history.unshift({
         formula: result.formula,
         total: result.total,
+        theme: theme,
         isCrit: result.isCrit,
         isFumble: result.isFumble,
         rolls: result.terms.map(t => {
@@ -550,6 +552,7 @@ function renderHistory() {
 
     list.innerHTML = state.history.map((h, i) => {
         const critClass = h.isCrit ? ' crit' : h.isFumble ? ' fumble' : '';
+        const theme = h.theme || getDieTheme(h.formula);
         const ago = timeAgo(h.time);
         let details = '';
         if (h.rolls) {
@@ -568,7 +571,7 @@ function renderHistory() {
         }
         return `
             <div class="hist-item" onclick="rollHistory(${i})">
-                <div class="hist-result${critClass}">${h.total}</div>
+                <div class="hist-result${critClass}" style="background-color: ${theme.bg}; color: ${theme.text}">${h.total}</div>
                 <div class="hist-info">
                     <div class="hist-formula">${h.formula}</div>
                     <div class="hist-details">${details}</div>
@@ -632,10 +635,11 @@ $('#saveFav').addEventListener('click', () => {
     const name = $('#favName').value.trim();
     const formula = $('#favFormula').textContent;
     const category = $('#favCategory').value.trim() || 'Uncategorized';
+    const theme = getDieTheme(formula);
 
     if (!name) { $('#favName').focus(); return; }
 
-    state.favorites.push({ name, formula, category, id: Date.now() });
+    state.favorites.push({ name, formula, category, theme, id: Date.now() });
     saveFavorites();
     renderFavorites();
     $('#favModal').classList.add('hidden');
@@ -665,9 +669,11 @@ function renderFavorites() {
                 <span class="arrow">&#9660;</span> ${cat} (${items.length})
             </div>
             <div class="fav-category-items">
-                ${items.map(fav => `
+                ${items.map(fav => {
+                    const theme = fav.theme || getDieTheme(fav.formula);
+                    return `
                     <div class="fav-item" data-id="${fav.id}">
-                        <div class="fav-result" onclick="rollFavorite(${fav.id})">Roll</div>
+                        <div class="fav-result" onclick="rollFavorite(${fav.id})" style="background-color: ${theme.bg}; color: ${theme.text}">Roll</div>
                         <div class="fav-info" onclick="rollFavorite(${fav.id})">
                             <div class="fav-name">${esc(fav.name)}</div>
                             <div class="fav-formula-text">${esc(fav.formula)}</div>
@@ -676,7 +682,7 @@ function renderFavorites() {
                             <button class="fav-action-btn delete" onclick="deleteFavorite(${fav.id})" title="Delete">&#128465;</button>
                         </div>
                     </div>
-                `).join('')}
+                `}).join('')}
             </div>
         </div>
     `).join('');
