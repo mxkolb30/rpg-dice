@@ -48,10 +48,18 @@ function getButtonStates(input) {
         R: false, r: false,
         bang: false, bangbang: false, bangp: false,
         compare: false, f: false,
+        openParen: false, comma: false, closeParen: false,
     };
 
+    // Track paren depth across full input
+    let depth = 0;
+    for (const ch of input) {
+        if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+    }
+
     if (!input) {
-        s.dice = true; s.digits = true;
+        s.dice = true; s.digits = true; s.openParen = true;
         return s;
     }
 
@@ -59,17 +67,32 @@ function getButtonStates(input) {
 
     // After an operator: start a new term
     if (lastChar === '+' || lastChar === '-') {
+        s.dice = true; s.digits = true; s.openParen = true;
+        return s;
+    }
+
+    // After opening paren or comma: start a sub-expression
+    if (lastChar === '(' || lastChar === ',') {
         s.dice = true; s.digits = true;
         return s;
     }
 
-    // Extract current term (after last +/- separator)
-    // Mirrors parseDiceExpr splitting logic from dice.js
+    // After closing paren: group-level keep/drop, operators, dice
+    if (lastChar === ')') {
+        s.K = true; s.k = true; s.X = true; s.x = true;
+        s.operators = true; s.dice = true; s.digits = true; s.openParen = true;
+        return s;
+    }
+
+    // Extract current term (after last +/- separator outside parens)
     let termStart = 0;
     let cur = '';
+    let d = 0;
     for (let i = 0; i < input.length; i++) {
         const ch = input[i];
-        if ((ch === '+' || ch === '-') && cur.length > 0 && !cur.match(/[KkXxRr!≤≥f]$/)) {
+        if (ch === '(') d++;
+        else if (ch === ')') d--;
+        if ((ch === '+' || ch === '-') && cur.length > 0 && d === 0) {
             termStart = i + 1;
             cur = '';
         } else {
@@ -78,12 +101,22 @@ function getButtonStates(input) {
     }
     const term = input.slice(termStart);
 
-    // Check if this term has a die in it
-    const dMatch = term.match(/d(F|\d*)(.*)/i);
+    // If we're inside a group, analyze the current sub-expression (after last comma)
+    let subExpr = term;
+    if (depth > 0) {
+        const lastComma = term.lastIndexOf(',');
+        const lastParen = term.lastIndexOf('(');
+        const splitPos = Math.max(lastComma, lastParen);
+        subExpr = splitPos >= 0 ? term.slice(splitPos + 1) : term;
+    }
+
+    // Check if sub-expression has a die in it
+    const dMatch = subExpr.match(/d(F|\d*)(.*)/i);
 
     if (!dMatch) {
-        // Bare constant (e.g. "5", "12") — can continue number, start new term, or start a die
-        s.dice = true; s.digits = true; s.operators = true;
+        // Bare constant (e.g. "5", "12")
+        s.dice = true; s.digits = true; s.operators = true; s.openParen = true;
+        if (depth > 0) { s.comma = true; s.closeParen = true; s.operators = false; s.openParen = false; }
         return s;
     }
 
@@ -97,14 +130,11 @@ function getButtonStates(input) {
     }
 
     // Complete die term — determine modifier context
-    // Check which modifier groups are already used (scan modifier region)
     const hasKeepDrop = /[KkXx]/.test(modifiers);
-    // Check !! and !p before bare !
     const hasExplode = /!!|!p|!/.test(modifiers);
     const hasReroll = /[Rr]/.test(modifiers);
     const hasFailure = /f/.test(modifiers);
 
-    // Helper: enable unused modifier groups
     function enableUnusedMods() {
         if (!hasKeepDrop) { s.K = true; s.k = true; s.X = true; s.x = true; }
         if (!hasExplode) { s.bang = true; s.bangbang = true; s.bangp = true; }
@@ -112,70 +142,78 @@ function getButtonStates(input) {
         if (!hasFailure) { s.f = true; }
     }
 
+    // Inside a group: enable comma and close paren alongside modifiers
+    function enableGroupNav() {
+        if (depth > 0) { s.comma = true; s.closeParen = true; }
+        else { s.operators = true; s.dice = true; s.openParen = true; }
+    }
+
     if (!modifiers) {
-        // Complete die, no modifiers yet: everything available
-        s.dice = true; s.digits = true; s.operators = true;
-        s.compare = true;
+        s.digits = true; s.compare = true;
         enableUnusedMods();
+        enableGroupNav();
+        if (depth === 0) { s.dice = true; }
         return s;
     }
 
-    // Classify what the modifier region ends with
     if (lastChar === '≤' || lastChar === '≥') {
-        // After comparison: only digits
         s.digits = true;
         return s;
     }
 
     if (lastChar === 'K' || lastChar === 'k' || lastChar === 'X' || lastChar === 'x') {
-        // After keep/drop modifier: digits (optional count), operators, dice, remaining mods
-        s.dice = true; s.digits = true; s.operators = true;
+        s.digits = true;
         enableUnusedMods();
-        // Disable the keep/drop group since one is now active
         s.K = false; s.k = false; s.X = false; s.x = false;
+        enableGroupNav();
+        if (depth === 0) { s.dice = true; }
         return s;
     }
 
     if (lastChar === 'R' || lastChar === 'r') {
-        // After reroll: digits, compare (for threshold), operators, dice, remaining mods
-        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        s.digits = true; s.compare = true;
         enableUnusedMods();
         s.R = false; s.r = false;
+        enableGroupNav();
+        if (depth === 0) { s.dice = true; }
         return s;
     }
 
     if (modifiers.endsWith('!!') || modifiers.endsWith('!p')) {
-        // After compound/penetrate
-        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        s.digits = true; s.compare = true;
         enableUnusedMods();
         s.bang = false; s.bangbang = false; s.bangp = false;
+        enableGroupNav();
+        if (depth === 0) { s.dice = true; }
         return s;
     }
 
     if (lastChar === '!') {
-        // After single explode
-        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        s.digits = true; s.compare = true;
         enableUnusedMods();
         s.bang = false; s.bangbang = false; s.bangp = false;
+        enableGroupNav();
+        if (depth === 0) { s.dice = true; }
         return s;
     }
 
     if (lastChar === 'f') {
-        // After failure count
-        s.dice = true; s.digits = true; s.operators = true; s.compare = true;
+        s.digits = true; s.compare = true;
         enableUnusedMods();
         s.f = false;
+        enableGroupNav();
+        if (depth === 0) { s.dice = true; }
         return s;
     }
 
-    // Ends with a digit (in modifier or sides context)
     if (/\d/.test(lastChar)) {
-        s.dice = true; s.digits = true; s.operators = true;
+        s.digits = true;
         enableUnusedMods();
+        enableGroupNav();
+        if (depth === 0) { s.operators = true; s.dice = true; s.openParen = true; }
         return s;
     }
 
-    // Fallback: allow dice and digits
     s.dice = true; s.digits = true;
     return s;
 }
@@ -201,6 +239,11 @@ function applyButtonStates(states) {
     };
     $$('#dice .mod-btn').forEach(btn => {
         const key = modMap[btn.dataset.val];
+        btn.disabled = key ? !states[key] : true;
+    });
+    const grpMap = { '(': 'openParen', ',': 'comma', ')': 'closeParen' };
+    $$('#dice .grp-btn').forEach(btn => {
+        const key = grpMap[btn.dataset.val];
         btn.disabled = key ? !states[key] : true;
     });
 }
@@ -230,6 +273,15 @@ $('#dice').querySelectorAll('.die-btn').forEach(btn => {
 });
 
 $('#dice').querySelectorAll('.num-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        state.input += btn.dataset.val;
+        updateDisplay();
+    });
+});
+
+// Group buttons
+$('#dice').querySelectorAll('.grp-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         if (btn.disabled) return;
         state.input += btn.dataset.val;
@@ -343,6 +395,24 @@ function displayResult(result, targetSel) {
     for (const term of result.terms) {
         if (term.type === 'constant') {
             rollsHtml += `<span class="roll-kept">${term.sign === -1 ? '-' : ''}${term.desc}</span> `;
+        } else if (term.type === 'group') {
+            const prefix = term.sign === -1 ? '(-) ' : '';
+            const droppedSet = new Set(term.droppedIdx);
+            rollsHtml += `${prefix}<div class="group-rolls">`;
+            term.subResults.forEach((sub, i) => {
+                const isDropped = droppedSet.has(i);
+                const cls = isDropped ? 'group-sub dropped' : 'group-sub';
+                let subRolls = '';
+                for (const t of sub.terms) {
+                    if (t.type === 'constant') {
+                        subRolls += `${t.sign === -1 ? '-' : ''}${t.desc} `;
+                    } else {
+                        subRolls += `[${t.rolls.join(', ')}] `;
+                    }
+                }
+                rollsHtml += `<div class="${cls}"><span class="group-sub-label">${sub.formula}:</span>${subRolls}<span class="group-sub-total">= ${sub.total}</span></div>`;
+            });
+            rollsHtml += `</div>`;
         } else {
             const prefix = term.sign === -1 ? '(-) ' : '';
             const parts = [];
@@ -389,17 +459,17 @@ function addHistory(result) {
         total: result.total,
         isCrit: result.isCrit,
         isFumble: result.isFumble,
-        rolls: result.terms.map(t => ({
-            type: t.type,
-            rolls: t.rolls,
-            kept: t.kept,
-            dropped: t.dropped,
-            sign: t.sign,
-            desc: t.desc,
-            sides: t.sides,
-            isFate: t.isFate,
-            count: t.count
-        })),
+        rolls: result.terms.map(t => {
+            if (t.type === 'group') return {
+                type: 'group', sign: t.sign, desc: t.desc,
+                subResults: t.subResults.map(sr => ({ formula: sr.formula, total: sr.total, terms: sr.terms.map(st => ({ type: st.type, rolls: st.rolls, desc: st.desc, sign: st.sign })) })),
+                keptIdx: t.keptIdx, droppedIdx: t.droppedIdx,
+            };
+            return {
+                type: t.type, rolls: t.rolls, kept: t.kept, dropped: t.dropped,
+                sign: t.sign, desc: t.desc, sides: t.sides, isFate: t.isFate, count: t.count,
+            };
+        }),
         time: Date.now()
     });
     if (state.history.length > 100) state.history.pop();
@@ -433,6 +503,13 @@ function renderHistory() {
         if (h.rolls) {
             details = h.rolls.map(t => {
                 if (t.type === 'constant') return `${t.sign === -1 ? '-' : ''}${t.desc}`;
+                if (t.type === 'group') {
+                    const droppedSet = new Set(t.droppedIdx);
+                    return t.subResults.map((sr, i) => {
+                        const mark = droppedSet.has(i) ? ' (dropped)' : '';
+                        return `${sr.formula}=${sr.total}${mark}`;
+                    }).join(' vs ');
+                }
                 const prefix = t.sign === -1 ? '(-) ' : '';
                 return prefix + '[' + t.rolls.join(', ') + ']';
             }).join(' ');

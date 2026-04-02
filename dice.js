@@ -23,6 +23,7 @@ function parseDiceExpr(formula) {
     const terms = [];
     let current = '';
     let sign = 1;
+    let depth = 0;
 
     // Normalize: trim whitespace
     formula = formula.trim();
@@ -30,7 +31,10 @@ function parseDiceExpr(formula) {
 
     for (let i = 0; i < formula.length; i++) {
         const ch = formula[i];
-        if ((ch === '+' || ch === '-') && current.length > 0 && !current.match(/[KkXxRr!≤≥f]$/)) {
+        if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+
+        if ((ch === '+' || ch === '-') && current.length > 0 && depth === 0) {
             terms.push({ sign, expr: current.trim() });
             sign = ch === '+' ? 1 : -1;
             current = '';
@@ -381,6 +385,84 @@ function evaluateDiceTerm(expr) {
     };
 }
 
+function evaluateGroupTerm(expr) {
+    const gm = expr.match(/^\((.+)\)([KkXx]\d*)?$/);
+    if (!gm) throw new Error(`Invalid group: ${expr}`);
+
+    const inner = gm[1];
+    const mod = gm[2] || '';
+
+    // Split by comma (respecting nested parens)
+    const parts = [];
+    let cur = '';
+    let depth = 0;
+    for (const ch of inner) {
+        if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+        if (ch === ',' && depth === 0) {
+            parts.push(cur.trim());
+            cur = '';
+        } else {
+            cur += ch;
+        }
+    }
+    if (cur.trim()) parts.push(cur.trim());
+
+    if (parts.length < 2) throw new Error('Group needs at least 2 expressions');
+
+    // Roll each sub-expression
+    const subResults = parts.map(p => rollFormula(p));
+    const totals = subResults.map(r => r.total);
+
+    // Parse keep/drop modifier
+    let keepHigh = null, keepLow = null, dropHigh = null, dropLow = null;
+    if (mod) {
+        const mm = mod.match(/^([KkXx])(\d*)$/);
+        if (mm) {
+            const n = mm[2] ? parseInt(mm[2]) : 1;
+            if (mm[1] === 'K') keepHigh = n;
+            else if (mm[1] === 'k') keepLow = n;
+            else if (mm[1] === 'X') dropHigh = n;
+            else if (mm[1] === 'x') dropLow = n;
+        }
+    }
+
+    // Determine kept/dropped indices
+    const indices = totals.map((t, i) => i);
+    let keptIdx, droppedIdx;
+
+    if (keepHigh !== null) {
+        const sorted = [...indices].sort((a, b) => totals[b] - totals[a]);
+        keptIdx = new Set(sorted.slice(0, keepHigh));
+    } else if (keepLow !== null) {
+        const sorted = [...indices].sort((a, b) => totals[a] - totals[b]);
+        keptIdx = new Set(sorted.slice(0, keepLow));
+    } else if (dropHigh !== null) {
+        const sorted = [...indices].sort((a, b) => totals[b] - totals[a]);
+        const dropSet = new Set(sorted.slice(0, dropHigh));
+        keptIdx = new Set(indices.filter(i => !dropSet.has(i)));
+    } else if (dropLow !== null) {
+        const sorted = [...indices].sort((a, b) => totals[a] - totals[b]);
+        const dropSet = new Set(sorted.slice(0, dropLow));
+        keptIdx = new Set(indices.filter(i => !dropSet.has(i)));
+    } else {
+        keptIdx = new Set(indices);
+    }
+
+    droppedIdx = new Set(indices.filter(i => !keptIdx.has(i)));
+
+    const total = indices.filter(i => keptIdx.has(i)).reduce((s, i) => s + totals[i], 0);
+
+    return {
+        total,
+        type: 'group',
+        desc: expr,
+        subResults,
+        keptIdx: [...keptIdx],
+        droppedIdx: [...droppedIdx],
+    };
+}
+
 function matchesCondition(val, cond) {
     if (cond.cmp === '≥') return val >= cond.val;
     if (cond.cmp === '≤') return val <= cond.val;
@@ -398,7 +480,9 @@ function rollFormula(formula) {
     let hasCrit = false, hasFumble = false;
 
     for (const term of terms) {
-        const result = evaluateDiceTerm(term.expr);
+        const result = term.expr.startsWith('(')
+            ? evaluateGroupTerm(term.expr)
+            : evaluateDiceTerm(term.expr);
         result.sign = term.sign;
         grandTotal += term.sign * result.total;
         if (result.isCrit) hasCrit = true;
@@ -423,6 +507,20 @@ function describeFormula(formula) {
             const prefix = term.sign === -1 ? '- ' : (parts.length > 0 ? '+ ' : '');
             if (/^\d+$/.test(term.expr)) {
                 parts.push(prefix + term.expr);
+            } else if (term.expr.startsWith('(')) {
+                const gm = term.expr.match(/^\((.+)\)([KkXx]\d*)?$/);
+                if (gm) {
+                    const inner = gm[1];
+                    const mod = gm[2] || '';
+                    let desc = `${prefix}(${inner})`;
+                    if (mod[0] === 'K') desc += ` keep the highest ${mod.slice(1) || '1'}`;
+                    else if (mod[0] === 'k') desc += ` keep the lowest ${mod.slice(1) || '1'}`;
+                    else if (mod[0] === 'X') desc += ` drop the highest ${mod.slice(1) || '1'}`;
+                    else if (mod[0] === 'x') desc += ` drop the lowest ${mod.slice(1) || '1'}`;
+                    parts.push(desc);
+                } else {
+                    parts.push(prefix + term.expr);
+                }
             } else {
                 const m = term.expr.match(/^(\d*)d(F|\d+)(.*)/i);
                 if (!m) { parts.push(prefix + term.expr); continue; }

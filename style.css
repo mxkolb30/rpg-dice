@@ -183,6 +183,13 @@ header h1 {
 .roll-crit { color: #4caf50; font-weight: 700; }
 .roll-fumble { color: var(--d4); font-weight: 700; }
 
+.group-rolls { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.group-sub { font-size: 13px; }
+.group-sub-label { color: var(--text-dim); margin-right: 4px; }
+.group-sub-total { font-weight: 700; margin-left: 4px; }
+.group-sub.dropped { opacity: 0.4; }
+.group-sub.dropped .group-sub-total { text-decoration: line-through; }
+
 /* Dice buttons */
 .dice-grid {
     display: flex;
@@ -282,9 +289,23 @@ header h1 {
 }
 .mod-btn:active { background: #546e7a; }
 
+.grp-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    border-radius: 6px;
+    background: #37474f;
+    color: #b0bec5;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.grp-btn:active { background: #546e7a; }
+
 .die-btn:disabled,
 .num-btn:disabled,
-.mod-btn:disabled {
+.mod-btn:disabled,
+.grp-btn:disabled {
     opacity: 0.3;
     cursor: default;
     pointer-events: none;
