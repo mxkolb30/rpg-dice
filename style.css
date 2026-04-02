@@ -1,15 +1,15 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --primary: #515151;
-    --primary-dark: #212121;
-    --accent: #2196f3;
-    --accent-dark: #0d47a1;
-    --bg: #313131;
-    --bg-card: #424242;
-    --bg-input: #1a1a1a;
-    --text: #e0e0e0;
-    --text-dim: #9e9e9e;
+    --primary: #1e1e1e;
+    --primary-dark: #000000;
+    --accent: #1a73e8;
+    --accent-dark: #174ea6;
+    --bg: #121212;
+    --bg-card: #28292a;
+    --bg-input: #202124;
+    --text: #e8eaed;
+    --text-dim: #9aa0a6;
     --d100: #607d8b;
     --d20: #2196f3;
     --d12: #009688;
@@ -285,7 +285,7 @@ header h1 {
     justify-content: center;
 }
 .num-btn:active { background: #555; }
-.op-btn { color: var(--accent); font-weight: 700; }
+.op-btn { color: var(--text); font-weight: 500; }
 
 
 /* Modifiers toggle & panel */
@@ -408,7 +408,7 @@ header h1 {
 .clear-btn:active { background: #555; }
 .roll-btn { background: var(--accent); color: #fff; flex: 2; }
 .roll-btn:active { background: var(--accent-dark); }
-.fav-btn { background: var(--bg-card); color: var(--accent); flex: 0 0 56px; font-size: 24px; }
+.fav-btn { background: var(--bg-card); color: var(--text); flex: 0 0 56px; font-size: 24px; }
 .fav-btn:active { background: #555; }
 
 /* Favorites */
