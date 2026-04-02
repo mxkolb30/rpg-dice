@@ -1,6 +1,6 @@
 {
-    "name": "OpenDice",
-    "short_name": "OpenDice",
+    "name": "RpgDice",
+    "short_name": "RpgDice",
     "description": "Web-based dice roller for tabletop RPGs",
     "start_url": ".",
     "display": "standalone",

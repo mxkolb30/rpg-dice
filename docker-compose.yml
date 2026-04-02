@@ -1,5 +1,5 @@
 services:
-  opendice:
+  rpgdice:
     build: .
     ports:
       - "8090:80"

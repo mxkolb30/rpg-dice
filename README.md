@@ -1,8 +1,8 @@
-# OpenDice
+# RpgDice
 
-OpenDice is a responsive web-based dice roller for tabletop RPGs. It features a Material Design interface optimized for both mobile and desktop use.
+RpgDice is a responsive web-based dice roller for tabletop RPGs. It features a Material Design interface optimized for both mobile and desktop use.
 
-![OpenDice Screenshot](screenshot.png)
+![RpgDice Screenshot](screenshot.png)
 
 ## Features
 
@@ -15,7 +15,7 @@ OpenDice is a responsive web-based dice roller for tabletop RPGs. It features a 
 
 ## Getting Started
 
-OpenDice is a static web application. No build process is required.
+RpgDice is a static web application. No build process is required.
 
 ### Local Development
 
