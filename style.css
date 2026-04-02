@@ -143,19 +143,17 @@ header h1 {
     padding: 0 4px 4px;
 }
 
-/* Result area */
-.result-area {
-    min-height: 0;
-    margin-bottom: 6px;
-    transition: all 0.2s;
-}
-.result-area .result-card {
+/* Result card */
+.result-card {
     background: var(--bg-card);
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 .result-total {
     background: var(--accent);

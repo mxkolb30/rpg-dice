@@ -377,6 +377,7 @@ function doRoll(formula) {
     try {
         const result = rollFormula(formula);
         displayResult(result, '#diceResult');
+        $('#resultModal').classList.remove('hidden');
         addHistory(result);
 
         if (result.isCrit) playSound(state.settings.critSound);
@@ -384,6 +385,7 @@ function doRoll(formula) {
         else playSound(state.settings.rollSound);
     } catch (e) {
         $('#diceResult').innerHTML = `<div class="result-card"><div class="result-details" style="color:#ef5350">${e.message}</div></div>`;
+        $('#resultModal').classList.remove('hidden');
     }
 }
 
@@ -661,6 +663,10 @@ $('#settingsModal').addEventListener('click', (e) => {
 
 $('#favModal').addEventListener('click', (e) => {
     if (e.target === $('#favModal')) $('#favModal').classList.add('hidden');
+});
+
+$('#resultModal').addEventListener('click', () => {
+    $('#resultModal').classList.add('hidden');
 });
 
 function saveAndCloseSettings() {

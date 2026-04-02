@@ -29,7 +29,6 @@
             <button class="backspace-btn" id="diceBackspace">&#9003;</button>
         </div>
         <div class="hint-label" id="diceHint"></div>
-        <div class="result-area" id="diceResult"></div>
         <div class="dice-grid">
             <button class="die-btn d100" data-die="d100">d100</button>
             <button class="die-btn d20" data-die="d20">d20</button>
@@ -185,6 +184,11 @@
                 <button class="action-btn roll-btn" id="saveFav">Save</button>
             </div>
         </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal hidden">
+        <div id="diceResult"></div>
     </div>
 
     <script src="dice.js"></script>
