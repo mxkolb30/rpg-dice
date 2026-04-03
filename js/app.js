@@ -28,9 +28,12 @@ function applyResponsiveLayout() {
     } else {
         // Single column: restore single-tab behavior
         backdrop.classList.add('hidden');
-        // Ensure exactly one tab is active
+        // Remove active from all panels, then activate only the current tab's panel
+        $$('.tab-content').forEach(t => t.classList.remove('active'));
         const activeTab = $('.tab.active');
-        if (!activeTab) {
+        if (activeTab) {
+            $(`#${activeTab.dataset.tab}`).classList.add('active');
+        } else {
             $$('.tab')[0].classList.add('active');
             $('#dice').classList.add('active');
         }

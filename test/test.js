@@ -274,6 +274,139 @@ for (const row of testData) {
     assert(parsed[2] === row[2], `Round-trip category: "${row[2]}" -> "${parsed[2]}"`);
 }
 
+// --- Responsive Layout ---
+
+// Minimal DOM mock for layout tests
+function createMockElement(id, classes) {
+    const cls = new Set(classes || []);
+    return {
+        id,
+        dataset: {},
+        classList: {
+            add(c) { cls.add(c); },
+            remove(c) { cls.delete(c); },
+            contains(c) { return cls.has(c); },
+            _set: cls,
+        },
+    };
+}
+
+function setupLayoutTest() {
+    const dice = createMockElement('dice', ['tab-content', 'active']);
+    const favorites = createMockElement('favorites', ['tab-content']);
+    const history = createMockElement('history', ['tab-content']);
+    const backdrop = createMockElement('historyBackdrop', ['hidden']);
+    const tabDice = createMockElement(null, ['tab', 'active']);
+    tabDice.dataset.tab = 'dice';
+    const tabFav = createMockElement(null, ['tab']);
+    tabFav.dataset.tab = 'favorites';
+    const tabHist = createMockElement(null, ['tab']);
+    tabHist.dataset.tab = 'history';
+
+    const elements = { dice, favorites, history, historyBackdrop: backdrop };
+    const tabs = [tabDice, tabFav, tabHist];
+    const tabContents = [dice, favorites, history];
+
+    const mockDom = {
+        $: (sel) => {
+            if (sel.startsWith('#')) return elements[sel.slice(1)];
+            if (sel === '.tab.active') return tabs.find(t => t.classList.contains('active')) || null;
+            return null;
+        },
+        $$: (sel) => {
+            if (sel === '.tab-content') return tabContents;
+            if (sel === '.tab') return tabs;
+            return [];
+        },
+    };
+
+    return { elements, tabs, tabContents, mockDom };
+}
+
+function applyResponsiveLayoutTest(mockDom, isMulti, isThree) {
+    const { $, $$ } = mockDom;
+    const backdrop = $('#historyBackdrop');
+
+    if (isThree) {
+        $('#dice').classList.add('active');
+        $('#favorites').classList.add('active');
+        $('#history').classList.add('active');
+        backdrop.classList.add('hidden');
+    } else if (isMulti) {
+        $('#dice').classList.add('active');
+        $('#favorites').classList.add('active');
+        $('#history').classList.remove('active');
+        backdrop.classList.add('hidden');
+    } else {
+        backdrop.classList.add('hidden');
+        $$('.tab-content').forEach(t => t.classList.remove('active'));
+        const activeTab = $('.tab.active');
+        if (activeTab) {
+            $(`#${activeTab.dataset.tab}`).classList.add('active');
+        } else {
+            $$('.tab')[0].classList.add('active');
+            $('#dice').classList.add('active');
+        }
+    }
+}
+
+// Test: Large -> Medium closes history
+(function() {
+    const { elements, mockDom } = setupLayoutTest();
+    // Simulate large screen: all panels active
+    applyResponsiveLayoutTest(mockDom, true, true);
+    assert(elements.dice.classList.contains('active'), 'large: dice active');
+    assert(elements.favorites.classList.contains('active'), 'large: favorites active');
+    assert(elements.history.classList.contains('active'), 'large: history active');
+
+    // Rotate to medium
+    applyResponsiveLayoutTest(mockDom, true, false);
+    assert(elements.dice.classList.contains('active'), 'large->mid: dice active');
+    assert(elements.favorites.classList.contains('active'), 'large->mid: favorites active');
+    assert(!elements.history.classList.contains('active'), 'large->mid: history closed');
+})();
+
+// Test: Medium -> Small restores single tab
+(function() {
+    const { elements, tabs, mockDom } = setupLayoutTest();
+    // Simulate medium: dice + favorites active
+    applyResponsiveLayoutTest(mockDom, true, false);
+    assert(elements.dice.classList.contains('active'), 'mid: dice active');
+    assert(elements.favorites.classList.contains('active'), 'mid: favorites active');
+
+    // Rotate to small (dice tab is the active tab)
+    applyResponsiveLayoutTest(mockDom, false, false);
+    assert(elements.dice.classList.contains('active'), 'mid->small: dice active');
+    assert(!elements.favorites.classList.contains('active'), 'mid->small: favorites not active');
+    assert(!elements.history.classList.contains('active'), 'mid->small: history not active');
+})();
+
+// Test: Medium -> Small with favorites tab active
+(function() {
+    const { elements, tabs, mockDom } = setupLayoutTest();
+    // Set favorites tab as active
+    tabs[0].classList.remove('active');
+    tabs[1].classList.add('active');
+
+    applyResponsiveLayoutTest(mockDom, true, false);
+    // Rotate to small
+    applyResponsiveLayoutTest(mockDom, false, false);
+    assert(!elements.dice.classList.contains('active'), 'mid->small(fav): dice not active');
+    assert(elements.favorites.classList.contains('active'), 'mid->small(fav): favorites active');
+    assert(!elements.history.classList.contains('active'), 'mid->small(fav): history not active');
+})();
+
+// Test: Large -> Small restores single tab
+(function() {
+    const { elements, mockDom } = setupLayoutTest();
+    applyResponsiveLayoutTest(mockDom, true, true);
+    // Straight to small
+    applyResponsiveLayoutTest(mockDom, false, false);
+    assert(elements.dice.classList.contains('active'), 'large->small: dice active');
+    assert(!elements.favorites.classList.contains('active'), 'large->small: favorites not active');
+    assert(!elements.history.classList.contains('active'), 'large->small: history not active');
+})();
+
 // --- Summary ---
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);

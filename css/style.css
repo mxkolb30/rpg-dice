@@ -152,8 +152,8 @@ body {
         display: none !important;
     }
 
-    .header-history-btn {
-        display: flex;
+    button.header-history-btn {
+        display: flex !important;
     }
 
     /* Panel headers for always-visible panels */
@@ -194,7 +194,7 @@ body {
         display: none !important;
     }
 
-    .header-history-btn {
+    button.header-history-btn {
         display: none !important;
     }
 }
@@ -219,7 +219,7 @@ header h1 {
     color: var(--accent);
 }
 
-.header-history-btn {
+button.header-history-btn {
     display: none;
 }
 
