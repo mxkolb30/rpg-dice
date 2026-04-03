@@ -515,6 +515,12 @@ header h1 {
     justify-content: flex-end;
     padding: 4px 0;
 }
+.favorites-header {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 4px 0;
+}
 .text-btn {
     background: none;
     border: none;
