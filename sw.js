@@ -1,14 +1,23 @@
-const CACHE_NAME = 'rpgdice-v13';
+const CACHE_NAME = 'rpgdice-v14';
 const BASE = self.registration.scope;
 const ASSETS = [
     '',
     'index.html',
-    'style.css',
-    'i18n.js',
+    'css/style.css',
+    'js/i18n.js',
     'lang/en.js',
     'lang/de.js',
-    'app.js',
-    'dice.js',
+    'js/dice.js',
+    'js/state.js',
+    'js/theme.js',
+    'js/sound.js',
+    'js/input.js',
+    'js/roll.js',
+    'js/history.js',
+    'js/favorites.js',
+    'js/csv.js',
+    'js/settings.js',
+    'js/app.js',
     'manifest.json',
     'icons/icon.svg',
     'sounds/applause_1.mp3',

@@ -1,9 +1,9 @@
-// Run with: node test.js
-eval(require('fs').readFileSync('dice.js', 'utf8'));
+// Run with: node test/test.js (from project root)
+eval(require('fs').readFileSync('js/dice.js', 'utf8'));
 
-// Extract getButtonStates from app.js
-const appCode = require('fs').readFileSync('app.js', 'utf8');
-const match = appCode.match(/\/\/ Button state machine\nfunction getButtonStates[\s\S]*?^}/m);
+// Extract getButtonStates from js/input.js
+const inputCode = require('fs').readFileSync('js/input.js', 'utf8');
+const match = inputCode.match(/\/\/ Button state machine\nfunction getButtonStates[\s\S]*?^}/m);
 eval(match[0]);
 
 let passed = 0;
@@ -227,10 +227,11 @@ assert(simulateInput([{type:'die', val:'d'}, {type:'num', val:'1'}, {type:'num',
 
 // --- CSV Export/Import ---
 
-// Extract csvEscapeField and parseCsvLine from app.js
-const csvEscapeMatch = appCode.match(/function csvEscapeField[\s\S]*?^}/m);
+// Extract csvEscapeField and parseCsvLine from js/csv.js
+const csvCode = require('fs').readFileSync('js/csv.js', 'utf8');
+const csvEscapeMatch = csvCode.match(/function csvEscapeField[\s\S]*?^}/m);
 eval(csvEscapeMatch[0]);
-const parseCsvMatch = appCode.match(/function parseCsvLine[\s\S]*?^}/m);
+const parseCsvMatch = csvCode.match(/function parseCsvLine[\s\S]*?^}/m);
 eval(parseCsvMatch[0]);
 
 // csvEscapeField tests
