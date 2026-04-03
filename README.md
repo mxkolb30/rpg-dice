@@ -20,7 +20,7 @@ RpgDice is a responsive web-based dice roller for tabletop RPGs. It features a M
 - **History and Favorites:** Persistent storage for previous rolls and frequently used formulas. CSV import/export for favorites.
 - **Internationalization:** English and German, with easy addition of new languages.
 - **PWA Support:** Installable as a Progressive Web App with offline functionality via Service Workers.
-- **Mobile Optimized:** Designed for modern tall phone screens with bottom navigation and safe-area support.
+- **Mobile Optimized:** Designed for modern tall phone screens with bottom navigation and safe-area support. Compact layout adapts to smaller screens (iPhone SE and similar).
 
 ## Getting Started
 
