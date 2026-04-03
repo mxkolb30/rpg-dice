@@ -17,6 +17,12 @@ if (state.settings.rollSound === undefined) state.settings.rollSound = 'roll_dic
 if (state.settings.critSound === undefined) state.settings.critSound = 'tada';
 if (state.settings.fumbleSound === undefined) state.settings.fumbleSound = 'sad_trombone';
 if (state.settings.theme === undefined) state.settings.theme = 'auto';
+if (state.settings.lang === undefined) {
+    state.settings.lang = navigator.language?.startsWith('de') ? 'de' : 'en';
+}
+
+// Language
+setLanguage(state.settings.lang);
 
 // Theme
 function applyTheme(theme) {
@@ -312,7 +318,7 @@ function updateDisplay() {
         el.classList.remove('placeholder');
         hint.textContent = describeFormula(state.input);
     } else {
-        el.textContent = 'Tap a die to roll';
+        el.textContent = t('dice.placeholder');
         el.classList.add('placeholder');
         hint.textContent = '';
     }
@@ -416,7 +422,7 @@ $('#modifiersToggle').addEventListener('click', () => {
     panel.classList.toggle('hidden');
     const open = !panel.classList.contains('hidden');
     toggle.classList.toggle('open', open);
-    toggle.innerHTML = open ? 'Modifiers &#9650;' : 'Modifiers &#9660;';
+    toggle.textContent = open ? t('modifiers.label.open') : t('modifiers.label.closed');
 });
 
 $('#diceBackspace').addEventListener('click', () => {
@@ -634,7 +640,7 @@ window.rollHistory = function(i) {
 };
 
 $('#clearHistory').addEventListener('click', () => {
-    if (confirm('Clear all history?')) {
+    if (confirm(t('hist.clear.confirm'))) {
         state.history = [];
         saveHistory();
         renderHistory();
@@ -712,7 +718,7 @@ function renderFavorites() {
                     const theme = fav.theme || getDieTheme(fav.formula);
                     return `
                     <div class="fav-item" data-id="${fav.id}">
-                        <div class="fav-result" onclick="rollFavorite(${fav.id})" style="background-color: ${theme.bg}; color: ${theme.text}">Roll</div>
+                        <div class="fav-result" onclick="rollFavorite(${fav.id})" style="background-color: ${theme.bg}; color: ${theme.text}">${esc(t('btn.roll'))}</div>
                         <div class="fav-info" onclick="rollFavorite(${fav.id})">
                             <div class="fav-name">${esc(fav.name)}</div>
                             <div class="fav-formula-text">${esc(fav.formula)}</div>
@@ -748,7 +754,7 @@ window.rollFavorite = function(id) {
 };
 
 window.deleteFavorite = function(id) {
-    if (!confirm('Delete this favorite?')) return;
+    if (!confirm(t('fav.delete.confirm'))) return;
     state.favorites = state.favorites.filter(f => f.id !== id);
     saveFavorites();
     renderFavorites();
@@ -819,7 +825,7 @@ function importFavorites() {
         const reader = new FileReader();
         reader.onload = () => {
             const lines = reader.result.split(/\r?\n/).filter(l => l.trim());
-            if (lines.length < 2) { alert('CSV file is empty or has no data rows.'); return; }
+            if (lines.length < 2) { alert(t('import.empty')); return; }
 
             // Skip header row
             const rows = lines.slice(1);
@@ -846,7 +852,7 @@ function importFavorites() {
             }
             saveFavorites();
             renderFavorites();
-            alert(`Imported ${added} favorite(s).`);
+            alert(t('import.success', { count: added }));
         };
         reader.readAsText(file);
     });
@@ -864,6 +870,7 @@ function esc(s) {
 
 // Settings
 $('#settingsBtn').addEventListener('click', () => {
+    $('#langSelect').value = state.settings.lang || 'en';
     $('#themeSelect').value = state.settings.theme || 'auto';
     $('#muteSounds').checked = !!state.settings.mute;
     $('#keepAwake').checked = !!state.settings.keepAwake;
@@ -888,6 +895,7 @@ $('#resultModal').addEventListener('click', () => {
 });
 
 function saveAndCloseSettings() {
+    state.settings.lang = $('#langSelect').value;
     state.settings.theme = $('#themeSelect').value;
     state.settings.mute = $('#muteSounds').checked;
     state.settings.keepAwake = $('#keepAwake').checked;
@@ -896,6 +904,8 @@ function saveAndCloseSettings() {
     state.settings.fumbleSound = $('#fumbleSound').value;
     localStorage.setItem('critdice_settings', JSON.stringify(state.settings));
 
+    setLanguage(state.settings.lang);
+    renderFavorites();
     applyTheme(state.settings.theme);
 
     if (state.settings.keepAwake && navigator.wakeLock) {
@@ -913,7 +923,7 @@ navigator.serviceWorker?.addEventListener('controllerchange', () => {
 
 $('#updateApp').addEventListener('click', async () => {
     const btn = $('#updateApp');
-    btn.textContent = 'Checking…';
+    btn.textContent = t('update.checking');
     btn.disabled = true;
     try {
         const reg = await navigator.serviceWorker?.getRegistration();
@@ -924,14 +934,14 @@ $('#updateApp').addEventListener('click', async () => {
             await new Promise(r => setTimeout(r, 1000));
         }
         if (!refreshing) {
-            btn.textContent = 'Already up to date';
+            btn.textContent = t('update.upToDate');
         }
     } catch {
-        btn.textContent = 'Update failed';
+        btn.textContent = t('update.failed');
     }
     if (!refreshing) {
         setTimeout(() => {
-            btn.textContent = 'Check for updates';
+            btn.textContent = t('btn.update');
             btn.disabled = false;
         }, 2000);
     }

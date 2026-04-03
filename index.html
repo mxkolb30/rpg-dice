@@ -18,9 +18,9 @@
                 <path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/>
                 <path d="M 12 2 L 12 8 M 12 8 L 3 7 M 12 8 L 21 7 M 12 8 L 7 15 M 12 8 L 17 15 M 7 15 L 17 15 M 7 15 L 3 17 M 7 15 L 11.869 21.858 M 16.952 14.989 L 20.959 16.965 M 17 15 L 11.933 21.914"/>
             </svg>
-            <h1>RpgDice</h1>
+            <h1 data-i18n="app.title">RpgDice</h1>
         </div>
-        <button id="settingsBtn" class="icon-btn" title="Settings">
+        <button id="settingsBtn" class="icon-btn" data-i18n-title="settings.title" title="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -31,8 +31,8 @@
     <!-- Dice Tab -->
     <section id="dice" class="tab-content active">
         <div class="input-row">
-            <div class="input-display" id="diceInput">Tap a die to roll</div>
-            <button class="backspace-btn" id="diceBackspace" title="Backspace">
+            <div class="input-display" id="diceInput" data-i18n="dice.placeholder">Tap a die to roll</div>
+            <button class="backspace-btn" id="diceBackspace" data-i18n-title="btn.backspace.title" title="Backspace">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
                     <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
                     <line x1="18" y1="9" x2="12" y2="15"></line>
@@ -76,39 +76,39 @@
             <button class="num-btn" data-val="0">0</button>
             <button class="num-btn op-btn" data-val="+">+</button>
         </div>
-        <button class="modifiers-toggle" id="modifiersToggle">Modifiers &#9660;</button>
+        <button class="modifiers-toggle" id="modifiersToggle" data-i18n="modifiers.label.closed">Modifiers &#9660;</button>
         <div class="modifiers-panel hidden" id="modifiersPanel">
             <div class="number-grid adv-mod">
-                <button class="mod-btn" data-val="K" data-desc="Keep Highest — keep only the N highest dice">K</button>
-                <button class="mod-btn" data-val="X" data-desc="Drop Highest — remove the N highest dice">X</button>
-                <button class="mod-btn" data-val="R" data-desc="Reroll — reroll every time the value is rolled">R</button>
-                <button class="mod-btn" data-val="!" data-desc="Explode — roll again and add when max is rolled">!</button>
-                <button class="mod-btn" data-val="≤" data-desc="Less or Equal — set a threshold (e.g. R≤2 rerolls 1s and 2s)">&le;</button>
-                <button class="mod-btn" data-val="≥" data-desc="Greater or Equal — set a threshold (e.g. ≥7 counts successes)">&ge;</button>
+                <button class="mod-btn" data-val="K" data-i18n-desc="mod.K.desc" data-desc="Keep Highest — keep only the N highest dice">K</button>
+                <button class="mod-btn" data-val="X" data-i18n-desc="mod.X.desc" data-desc="Drop Highest — remove the N highest dice">X</button>
+                <button class="mod-btn" data-val="R" data-i18n-desc="mod.R.desc" data-desc="Reroll — reroll every time the value is rolled">R</button>
+                <button class="mod-btn" data-val="!" data-i18n-desc="mod.bang.desc" data-desc="Explode — roll again and add when max is rolled">!</button>
+                <button class="mod-btn" data-val="≤" data-i18n-desc="mod.lte.desc" data-desc="Less or Equal — set a threshold (e.g. R≤2 rerolls 1s and 2s)">&le;</button>
+                <button class="mod-btn" data-val="≥" data-i18n-desc="mod.gte.desc" data-desc="Greater or Equal — set a threshold (e.g. ≥7 counts successes)">&ge;</button>
             </div>
             <div class="number-grid adv-mod">
-                <button class="mod-btn" data-val="k" data-desc="Keep Lowest — keep only the N lowest dice">k</button>
-                <button class="mod-btn" data-val="x" data-desc="Drop Lowest — remove the N lowest dice">x</button>
-                <button class="mod-btn" data-val="r" data-desc="Reroll Once — reroll once per die if value is rolled">r</button>
-                <button class="mod-btn" data-val="!!" data-desc="Compound — like explode, but added to the same die total">!!</button>
-                <button class="mod-btn" data-val="!p" data-desc="Penetrate — like explode, but each extra roll gets -1">!p</button>
-                <button class="mod-btn" data-val="f" data-desc="Count Failures — subtract dice meeting a threshold">f</button>
+                <button class="mod-btn" data-val="k" data-i18n-desc="mod.k.desc" data-desc="Keep Lowest — keep only the N lowest dice">k</button>
+                <button class="mod-btn" data-val="x" data-i18n-desc="mod.x.desc" data-desc="Drop Lowest — remove the N lowest dice">x</button>
+                <button class="mod-btn" data-val="r" data-i18n-desc="mod.r.desc" data-desc="Reroll Once — reroll once per die if value is rolled">r</button>
+                <button class="mod-btn" data-val="!!" data-i18n-desc="mod.bangbang.desc" data-desc="Compound — like explode, but added to the same die total">!!</button>
+                <button class="mod-btn" data-val="!p" data-i18n-desc="mod.bangp.desc" data-desc="Penetrate — like explode, but each extra roll gets -1">!p</button>
+                <button class="mod-btn" data-val="f" data-i18n-desc="mod.f.desc" data-desc="Count Failures — subtract dice meeting a threshold">f</button>
             </div>
             <div class="number-grid adv-mod grp-grid">
-                <button class="grp-btn" data-val="(" data-desc="Open Group — group different dice for combined keep/drop">(</button>
-                <button class="grp-btn" data-val="," data-desc="Separator — separate dice within a group">,</button>
-                <button class="grp-btn" data-val=")" data-desc="Close Group — close group, then add K/k/X/x">)</button>
+                <button class="grp-btn" data-val="(" data-i18n-desc="grp.open.desc" data-desc="Open Group — group different dice for combined keep/drop">(</button>
+                <button class="grp-btn" data-val="," data-i18n-desc="grp.sep.desc" data-desc="Separator — separate dice within a group">,</button>
+                <button class="grp-btn" data-val=")" data-i18n-desc="grp.close.desc" data-desc="Close Group — close group, then add K/k/X/x">)</button>
             </div>
         </div>
         <div class="action-row">
-            <button class="action-btn clear-btn" id="diceClear" title="Clear">
+            <button class="action-btn clear-btn" id="diceClear" data-i18n-title="btn.clear.title" title="Clear">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </button>
-            <button class="action-btn roll-btn" id="diceRoll">Roll</button>
-            <button class="action-btn fav-btn" id="diceFav" title="Favorite">
+            <button class="action-btn roll-btn" id="diceRoll" data-i18n="btn.roll">Roll</button>
+            <button class="action-btn fav-btn" id="diceFav" data-i18n-title="btn.fav.title" title="Favorite">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
@@ -119,8 +119,8 @@
     <!-- Favorites Tab -->
     <section id="favorites" class="tab-content">
         <div class="favorites-header" id="favoritesHeader" style="display:none">
-            <button class="text-btn" id="importFavBtn">Import</button>
-            <button class="text-btn" id="exportFavBtn">Export</button>
+            <button class="text-btn" id="importFavBtn" data-i18n="btn.import">Import</button>
+            <button class="text-btn" id="exportFavBtn" data-i18n="btn.export">Export</button>
         </div>
         <div class="empty-state" id="favEmpty">
             <div class="empty-icon">
@@ -128,7 +128,7 @@
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
             </div>
-            <p>No favorites yet. Save a roll by tapping the star icon after entering a formula.</p>
+            <p data-i18n="fav.empty">No favorites yet. Save a roll by tapping the star icon after entering a formula.</p>
         </div>
         <div id="favList" class="fav-list"></div>
     </section>
@@ -136,7 +136,7 @@
     <!-- History Tab -->
     <section id="history" class="tab-content">
         <div class="history-header" id="historyHeader" style="display:none">
-            <button class="text-btn" id="clearHistory">Clear History</button>
+            <button class="text-btn" id="clearHistory" data-i18n="btn.clearHistory">Clear History</button>
         </div>
         <div class="empty-state" id="histEmpty">
             <div class="empty-icon">
@@ -145,24 +145,24 @@
                     <path d="M3 3v5h5" />
                 </svg>
             </div>
-            <p>No previous rolls.</p>
+            <p data-i18n="hist.empty">No previous rolls.</p>
         </div>
         <div id="histList" class="hist-list"></div>
     </section>
 
     <nav class="tabs">
-        <button class="tab active" data-tab="dice" title="Dice">
+        <button class="tab active" data-tab="dice" data-i18n-title="tab.dice" title="Dice">
             <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/>
                 <path d="M 12 2 L 12 8 M 12 8 L 3 7 M 12 8 L 21 7 M 12 8 L 7 15 M 12 8 L 17 15 M 7 15 L 17 15 M 7 15 L 3 17 M 7 15 L 11.869 21.858 M 16.952 14.989 L 20.959 16.965 M 17 15 L 11.933 21.914"/>
             </svg>
         </button>
-        <button class="tab" data-tab="favorites" title="Favorites">
+        <button class="tab" data-tab="favorites" data-i18n-title="tab.favorites" title="Favorites">
             <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
         </button>
-        <button class="tab" data-tab="history" title="History">
+        <button class="tab" data-tab="history" data-i18n-title="tab.history" title="History">
             <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
@@ -174,60 +174,67 @@
     <div id="settingsModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Settings</h2>
+                <h2 data-i18n="settings.title">Settings</h2>
                 <button class="modal-close" id="closeSettings">&times;</button>
             </div>
             <label class="setting-row">
-                <span>Theme</span>
-                <select id="themeSelect">
-                    <option value="auto">Auto (System)</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
+                <span data-i18n="settings.language">Language</span>
+                <select id="langSelect">
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
                 </select>
             </label>
             <label class="setting-row">
-                <span>Mute all sounds</span>
+                <span data-i18n="settings.theme">Theme</span>
+                <select id="themeSelect">
+                    <option value="auto" data-i18n="theme.auto">Auto (System)</option>
+                    <option value="light" data-i18n="theme.light">Light</option>
+                    <option value="dark" data-i18n="theme.dark">Dark</option>
+                </select>
+            </label>
+            <label class="setting-row">
+                <span data-i18n="settings.mute">Mute all sounds</span>
                 <input type="checkbox" id="muteSounds">
             </label>
             <label class="setting-row">
-                <span>Roll sound</span>
+                <span data-i18n="settings.rollSound">Roll sound</span>
                 <select id="rollSound">
-                    <option value="roll_dice_1">Dice Roll 1</option>
-                    <option value="roll_dice_2">Dice Roll 2</option>
-                    <option value="roll_dice_3">Dice Roll 3</option>
-                    <option value="none">None</option>
+                    <option value="roll_dice_1" data-i18n="sound.roll1">Dice Roll 1</option>
+                    <option value="roll_dice_2" data-i18n="sound.roll2">Dice Roll 2</option>
+                    <option value="roll_dice_3" data-i18n="sound.roll3">Dice Roll 3</option>
+                    <option value="none" data-i18n="sound.none">None</option>
                 </select>
             </label>
             <label class="setting-row">
-                <span>Critical sound</span>
+                <span data-i18n="settings.critSound">Critical sound</span>
                 <select id="critSound">
-                    <option value="tada">Tada</option>
-                    <option value="applause_1">Applause</option>
-                    <option value="bullseye">Bullseye</option>
-                    <option value="none">None</option>
+                    <option value="tada" data-i18n="sound.tada">Tada</option>
+                    <option value="applause_1" data-i18n="sound.applause">Applause</option>
+                    <option value="bullseye" data-i18n="sound.bullseye">Bullseye</option>
+                    <option value="none" data-i18n="sound.none">None</option>
                 </select>
             </label>
             <label class="setting-row">
-                <span>Fumble sound</span>
+                <span data-i18n="settings.fumbleSound">Fumble sound</span>
                 <select id="fumbleSound">
-                    <option value="sad_trombone">Sad Trombone</option>
-                    <option value="aww">Aww</option>
-                    <option value="crickets">Crickets</option>
-                    <option value="none">None</option>
+                    <option value="sad_trombone" data-i18n="sound.sadTrombone">Sad Trombone</option>
+                    <option value="aww" data-i18n="sound.aww">Aww</option>
+                    <option value="crickets" data-i18n="sound.crickets">Crickets</option>
+                    <option value="none" data-i18n="sound.none">None</option>
                 </select>
             </label>
             <label class="setting-row">
-                <span>Keep screen awake</span>
+                <span data-i18n="settings.keepAwake">Keep screen awake</span>
                 <input type="checkbox" id="keepAwake">
             </label>
             <div class="setting-row" style="justify-content: center; border-bottom: none; gap: 8px;">
-                <button class="text-btn" id="updateApp">Check for updates</button>
+                <button class="text-btn" id="updateApp" data-i18n="btn.update">Check for updates</button>
             </div>
             <a href="https://github.com/mxkolb30/rpg-dice" target="_blank" class="setting-row" style="text-decoration: none; color: var(--accent); justify-content: center; gap: 8px; border-bottom: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
                     <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                 </svg>
-                <span>GitHub Repository</span>
+                <span data-i18n="link.github">GitHub Repository</span>
             </a>
         </div>
     </div>
@@ -236,24 +243,24 @@
     <div id="favModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Save Favorite</h2>
+                <h2 data-i18n="fav.save.title">Save Favorite</h2>
                 <button class="modal-close" id="closeFavModal">&times;</button>
             </div>
             <div class="modal-body">
                 <label>
-                    <span>Name</span>
-                    <input type="text" id="favName" placeholder="e.g. Fireball Damage">
+                    <span data-i18n="fav.name">Name</span>
+                    <input type="text" id="favName" data-i18n-placeholder="fav.name.placeholder" placeholder="e.g. Fireball Damage">
                 </label>
                 <label>
-                    <span>Category</span>
-                    <input type="text" id="favCategory" placeholder="e.g. Spells" list="categoryList">
+                    <span data-i18n="fav.category">Category</span>
+                    <input type="text" id="favCategory" data-i18n-placeholder="fav.category.placeholder" placeholder="e.g. Spells" list="categoryList">
                     <datalist id="categoryList"></datalist>
                 </label>
                 <div class="fav-formula" id="favFormula"></div>
             </div>
             <div class="modal-actions">
-                <button class="action-btn clear-btn" id="cancelFav">Cancel</button>
-                <button class="action-btn roll-btn" id="saveFav">Save</button>
+                <button class="action-btn clear-btn" id="cancelFav" data-i18n="btn.cancel">Cancel</button>
+                <button class="action-btn roll-btn" id="saveFav" data-i18n="btn.save">Save</button>
             </div>
         </div>
     </div>
@@ -263,6 +270,9 @@
         <div id="diceResult"></div>
     </div>
 
+    <script src="i18n.js"></script>
+    <script src="lang/en.js"></script>
+    <script src="lang/de.js"></script>
     <script src="dice.js"></script>
     <script src="app.js"></script>
 </body>

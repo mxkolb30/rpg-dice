@@ -1,9 +1,12 @@
-const CACHE_NAME = 'rpgdice-v10';
+const CACHE_NAME = 'rpgdice-v12';
 const BASE = self.registration.scope;
 const ASSETS = [
     '',
     'index.html',
     'style.css',
+    'i18n.js',
+    'lang/en.js',
+    'lang/de.js',
     'app.js',
     'dice.js',
     'manifest.json',
