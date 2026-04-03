@@ -908,9 +908,7 @@ function saveAndCloseSettings() {
     renderFavorites();
     applyTheme(state.settings.theme);
 
-    if (state.settings.keepAwake && navigator.wakeLock) {
-        navigator.wakeLock.request('screen').catch(() => {});
-    }
+    applyWakeLock();
 
     $('#settingsModal').classList.add('hidden');
 }
@@ -962,6 +960,17 @@ renderHistory();
 renderFavorites();
 
 // Wake lock
-if (state.settings.keepAwake && navigator.wakeLock) {
-    navigator.wakeLock.request('screen').catch(() => {});
+let wakeLockSentinel = null;
+
+function applyWakeLock() {
+    if (state.settings.keepAwake && navigator.wakeLock) {
+        navigator.wakeLock.request('screen')
+            .then(s => { wakeLockSentinel = s; })
+            .catch(() => {});
+    } else if (wakeLockSentinel) {
+        wakeLockSentinel.release().catch(() => {});
+        wakeLockSentinel = null;
+    }
 }
+
+applyWakeLock();

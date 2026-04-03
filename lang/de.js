@@ -63,6 +63,7 @@ registerLanguage('de', {
     'settings.critSound': 'Kritischer Treffer',
     'settings.fumbleSound': 'Patzer-Geräusch',
     'settings.keepAwake': 'Bildschirm anlassen',
+    'settings.sounds': 'Sound',
     'sound.none': 'Keins',
     'sound.roll1': 'Würfelwurf 1',
     'sound.roll2': 'Würfelwurf 2',

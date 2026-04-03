@@ -63,6 +63,7 @@ registerLanguage('en', {
     'settings.critSound': 'Critical sound',
     'settings.fumbleSound': 'Fumble sound',
     'settings.keepAwake': 'Keep screen awake',
+    'settings.sounds': 'Sounds',
     'sound.none': 'None',
     'sound.roll1': 'Dice Roll 1',
     'sound.roll2': 'Dice Roll 2',

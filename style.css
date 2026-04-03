@@ -618,6 +618,16 @@ header h1 {
     padding: 0 4px;
 }
 
+.setting-group-header {
+    padding: 10px 16px 4px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--setting-border);
+}
+
 .setting-row {
     display: flex;
     align-items: center;
