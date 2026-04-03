@@ -16,6 +16,34 @@ const state = {
 if (state.settings.rollSound === undefined) state.settings.rollSound = 'roll_dice_1';
 if (state.settings.critSound === undefined) state.settings.critSound = 'tada';
 if (state.settings.fumbleSound === undefined) state.settings.fumbleSound = 'sad_trombone';
+if (state.settings.theme === undefined) state.settings.theme = 'auto';
+
+// Theme
+function applyTheme(theme) {
+    const root = document.documentElement;
+    if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+    } else if (theme === 'dark') {
+        root.setAttribute('data-theme', 'dark');
+    } else {
+        root.removeAttribute('data-theme');
+    }
+    // Update meta theme-color
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+        let isDark;
+        if (theme === 'dark') isDark = true;
+        else if (theme === 'light') isDark = false;
+        else isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        meta.content = isDark ? '#313131' : '#ffffff';
+    }
+}
+
+applyTheme(state.settings.theme);
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (state.settings.theme === 'auto') applyTheme('auto');
+});
 
 // Audio cache
 const audioCache = {};
@@ -828,6 +856,7 @@ function esc(s) {
 
 // Settings
 $('#settingsBtn').addEventListener('click', () => {
+    $('#themeSelect').value = state.settings.theme || 'auto';
     $('#muteSounds').checked = !!state.settings.mute;
     $('#keepAwake').checked = !!state.settings.keepAwake;
     $('#rollSound').value = state.settings.rollSound || 'roll_dice_1';
@@ -851,12 +880,15 @@ $('#resultModal').addEventListener('click', () => {
 });
 
 function saveAndCloseSettings() {
+    state.settings.theme = $('#themeSelect').value;
     state.settings.mute = $('#muteSounds').checked;
     state.settings.keepAwake = $('#keepAwake').checked;
     state.settings.rollSound = $('#rollSound').value;
     state.settings.critSound = $('#critSound').value;
     state.settings.fumbleSound = $('#fumbleSound').value;
     localStorage.setItem('critdice_settings', JSON.stringify(state.settings));
+
+    applyTheme(state.settings.theme);
 
     if (state.settings.keepAwake && navigator.wakeLock) {
         navigator.wakeLock.request('screen').catch(() => {});
