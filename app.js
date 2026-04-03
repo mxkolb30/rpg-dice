@@ -897,6 +897,38 @@ function saveAndCloseSettings() {
     $('#settingsModal').classList.add('hidden');
 }
 
+// PWA update
+let refreshing = false;
+navigator.serviceWorker?.addEventListener('controllerchange', () => {
+    if (!refreshing) { refreshing = true; window.location.reload(); }
+});
+
+$('#updateApp').addEventListener('click', async () => {
+    const btn = $('#updateApp');
+    btn.textContent = 'Checking…';
+    btn.disabled = true;
+    try {
+        const reg = await navigator.serviceWorker?.getRegistration();
+        if (reg) {
+            await reg.update();
+            // If a new SW installed and skipWaiting fired, controllerchange will reload.
+            // Give it a moment to activate.
+            await new Promise(r => setTimeout(r, 1000));
+        }
+        if (!refreshing) {
+            btn.textContent = 'Already up to date';
+        }
+    } catch {
+        btn.textContent = 'Update failed';
+    }
+    if (!refreshing) {
+        setTimeout(() => {
+            btn.textContent = 'Check for updates';
+            btn.disabled = false;
+        }, 2000);
+    }
+});
+
 // Keyboard support
 document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT') return;
