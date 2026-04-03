@@ -20,14 +20,23 @@
             </svg>
             <h1 data-i18n="app.title">RpgDice</h1>
         </div>
-        <button id="settingsBtn" class="icon-btn" data-i18n-title="settings.title" title="Settings">
+        <div style="display: flex; align-items: center; gap: 4px;">
+            <button id="historyToggleBtn" class="icon-btn header-history-btn" data-i18n-title="tab.history" title="History">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                </svg>
+            </button>
+            <button id="settingsBtn" class="icon-btn" data-i18n-title="settings.title" title="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
-        </button>
+            </button>
+        </div>
     </header>
 
+    <main class="panels">
     <!-- Dice Tab -->
     <section id="dice" class="tab-content active">
         <div class="input-row">
@@ -118,6 +127,7 @@
 
     <!-- Favorites Tab -->
     <section id="favorites" class="tab-content">
+        <div class="panel-label" data-i18n="tab.favorites">Favorites</div>
         <div class="favorites-header" id="favoritesHeader" style="display:none">
             <button class="text-btn" id="importFavBtn" data-i18n="btn.import">Import</button>
             <button class="text-btn" id="exportFavBtn" data-i18n="btn.export">Export</button>
@@ -135,6 +145,7 @@
 
     <!-- History Tab -->
     <section id="history" class="tab-content">
+        <div class="panel-label" data-i18n="tab.history">History<button class="overlay-close-btn" id="closeHistoryOverlay" aria-label="Close">&times;</button></div>
         <div class="history-header" id="historyHeader" style="display:none">
             <button class="text-btn" id="clearHistory" data-i18n="btn.clearHistory">Clear History</button>
         </div>
@@ -149,6 +160,10 @@
         </div>
         <div id="histList" class="hist-list"></div>
     </section>
+    </main>
+
+    <!-- History overlay backdrop (medium screens) -->
+    <div id="historyBackdrop" class="history-backdrop hidden"></div>
 
     <nav class="tabs">
         <button class="tab active" data-tab="dice" data-i18n-title="tab.dice" title="Dice">

@@ -85,10 +85,12 @@ window.rollFavorite = function(id) {
     const fav = state.favorites.find(f => f.id === id);
     if (!fav) return;
 
-    $$('.tab').forEach(t => t.classList.remove('active'));
-    $$('.tab-content').forEach(t => t.classList.remove('active'));
-    $$('.tab')[0].classList.add('active');
-    $('#dice').classList.add('active');
+    if (!isMultiPanel()) {
+        $$('.tab').forEach(t => t.classList.remove('active'));
+        $$('.tab-content').forEach(t => t.classList.remove('active'));
+        $$('.tab')[0].classList.add('active');
+        $('#dice').classList.add('active');
+    }
 
     state.input = fav.formula;
     updateDisplay();

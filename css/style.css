@@ -59,7 +59,7 @@ body {
     position: relative;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 600px) and (max-width: 767px) {
     html {
         background: var(--bg);
         display: flex;
@@ -74,6 +74,128 @@ body {
         border-radius: 16px;
         box-shadow: 0 10px 40px var(--overlay);
         overflow: hidden;
+    }
+}
+
+.panels {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+.panel-label {
+    display: none;
+}
+
+.overlay-close-btn {
+    display: none;
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .overlay-close-btn {
+        display: inline;
+    }
+}
+
+/* Medium screens: two columns */
+@media (min-width: 768px) {
+    body {
+        max-width: none;
+        height: 100dvh;
+    }
+
+    .panels {
+        flex-direction: row;
+    }
+
+    #dice.tab-content {
+        display: flex;
+        min-width: 33.33%;
+        flex: 1 1 450px;
+        border-right: 1px solid var(--border);
+    }
+
+    #favorites.tab-content {
+        display: flex;
+        flex: 1;
+        min-width: 280px;
+    }
+
+    #history.tab-content {
+        display: none;
+    }
+
+    /* History as slide-over overlay */
+    #history.tab-content.active {
+        display: flex;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 380px;
+        max-width: 90vw;
+        height: 100dvh;
+        background: var(--bg);
+        box-shadow: -4px 0 20px var(--overlay);
+        z-index: 200;
+        border-left: 1px solid var(--border);
+    }
+
+    .tabs {
+        display: none !important;
+    }
+
+    .header-history-btn {
+        display: flex;
+    }
+
+    /* Panel headers for always-visible panels */
+    .panel-label {
+        display: block;
+        padding: 10px 12px 4px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Large screens: three columns */
+@media (min-width: 1200px) {
+    #history.tab-content {
+        display: flex;
+        flex: 1;
+        min-width: 280px;
+        border-left: 1px solid var(--border);
+        position: static;
+        width: auto;
+        max-width: none;
+        box-shadow: none;
+        z-index: auto;
+    }
+
+    #history.tab-content.active {
+        position: static;
+        width: auto;
+        max-width: none;
+        box-shadow: none;
+        z-index: auto;
+    }
+
+    .tabs {
+        display: none !important;
+    }
+
+    .header-history-btn {
+        display: none !important;
     }
 }
 
@@ -95,6 +217,10 @@ header h1 {
     width: 28px;
     height: 28px;
     color: var(--accent);
+}
+
+.header-history-btn {
+    display: none;
 }
 
 .icon-btn {
@@ -698,6 +824,30 @@ header h1 {
     100% { transform: scale(1); }
 }
 .result-total.animate { animation: pop 0.3s ease; }
+
+/* History slide-over backdrop */
+.history-backdrop {
+    display: none;
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+    .history-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--overlay);
+        z-index: 199;
+    }
+    .history-backdrop:not(.hidden) {
+        display: block;
+    }
+    #history.tab-content.active {
+        animation: slideInRight 0.25s ease;
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+}
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }

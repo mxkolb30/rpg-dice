@@ -80,10 +80,14 @@ window.rollHistory = function(i) {
     const h = state.history[i];
     if (!h) return;
 
-    $$('.tab').forEach(t => t.classList.remove('active'));
-    $$('.tab-content').forEach(t => t.classList.remove('active'));
-    $$('.tab')[0].classList.add('active');
-    $('#dice').classList.add('active');
+    if (isMultiPanel()) {
+        closeHistoryOverlay();
+    } else {
+        $$('.tab').forEach(t => t.classList.remove('active'));
+        $$('.tab-content').forEach(t => t.classList.remove('active'));
+        $$('.tab')[0].classList.add('active');
+        $('#dice').classList.add('active');
+    }
 
     state.input = h.formula;
     updateDisplay();
