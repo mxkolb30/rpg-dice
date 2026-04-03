@@ -28,14 +28,22 @@ function applyTheme(theme) {
     } else {
         root.removeAttribute('data-theme');
     }
-    // Update meta theme-color
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-        let isDark;
-        if (theme === 'dark') isDark = true;
-        else if (theme === 'light') isDark = false;
-        else isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        meta.content = isDark ? '#313131' : '#ffffff';
+    // Update meta theme-color to match header
+    const metas = document.querySelectorAll('meta[name="theme-color"]');
+    if (theme === 'auto') {
+        // Restore media-query-based meta tags
+        if (metas.length === 2) {
+            metas[0].setAttribute('media', '(prefers-color-scheme: dark)');
+            metas[0].content = '#1e1e1e';
+            metas[1].setAttribute('media', '(prefers-color-scheme: light)');
+            metas[1].content = '#ffffff';
+        }
+    } else {
+        const color = theme === 'dark' ? '#1e1e1e' : '#ffffff';
+        metas.forEach(m => {
+            m.removeAttribute('media');
+            m.content = color;
+        });
     }
 }
 
