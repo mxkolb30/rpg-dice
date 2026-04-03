@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rpgdice-v8';
+const CACHE_NAME = 'rpgdice-v9';
 const BASE = self.registration.scope;
 const ASSETS = [
     '',
