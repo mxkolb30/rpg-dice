@@ -366,13 +366,76 @@ button.header-history-btn {
     line-height: 1.5;
     text-align: center;
 }
-.result-details .formula { color: var(--text); font-size: 15px; }
-.result-details .rolls { word-break: break-all; }
+.result-details .formula { color: var(--text); font-size: 15px; margin-bottom: 4px; }
+.result-details .rolls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Term wrapper: label + pill stacked vertically */
+.roll-term {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.roll-term-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: lowercase;
+    letter-spacing: 0.3px;
+}
+
+/* Pill chip for dice groups */
+.roll-pill {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-input);
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 100%;
+}
+.roll-pill .separator {
+    color: var(--text-dim);
+    font-size: 11px;
+}
+
+/* Operator between terms */
+.roll-operator {
+    color: var(--text-dim);
+    font-size: 16px;
+    font-weight: 500;
+    align-self: flex-end;
+    padding-bottom: 2px;
+}
+
+/* Individual die values inside pills */
 .roll-kept { color: var(--text); }
-.roll-dropped { color: var(--dropped); text-decoration: line-through; }
+.roll-dropped {
+    color: var(--dropped);
+    opacity: 0.4;
+    text-decoration: none;
+    font-style: italic;
+}
 .roll-added { color: var(--success); }
 .roll-crit { color: var(--success); font-weight: 700; }
-.roll-fumble { color: var(--d4); font-weight: 700; }
+.roll-fumble { color: var(--d4); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Constant term (no pill, just the number) */
+.roll-constant {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    align-self: flex-end;
+    padding-bottom: 2px;
+}
 
 .group-rolls { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
 .group-sub { font-size: 13px; }
@@ -689,7 +752,11 @@ button.header-history-btn {
 .hist-result.fumble { background: var(--d4); }
 .hist-info { flex: 1; }
 .hist-formula { font-size: 14px; }
-.hist-details { font-size: 12px; color: var(--text-dim); margin-top: 2px; word-break: break-all; }
+.hist-details { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.hist-details .rolls { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 3px; }
+.hist-details .roll-pill { font-size: 11px; padding: 1px 6px; border-radius: 8px; gap: 2px; max-width: 100%; }
+.hist-details .roll-operator { font-size: 12px; }
+.hist-details .roll-constant { font-size: 12px; }
 .hist-time { font-size: 11px; color: var(--hist-time); margin-top: 2px; }
 
 /* Empty states */

@@ -50,18 +50,53 @@ function renderHistory() {
         const ago = timeAgo(h.time);
         let details = '';
         if (h.rolls) {
-            details = h.rolls.map(t => {
-                if (t.type === 'constant') return `${t.sign === -1 ? '-' : ''}${t.desc}`;
+            const parts = h.rolls.map((t, ti) => {
+                const sign = t.sign === -1 ? '<span class="roll-operator"> − </span>' : (ti > 0 ? '<span class="roll-operator"> + </span>' : '');
+
+                if (t.type === 'constant') {
+                    return `${sign}<span class="roll-constant">${t.desc}</span>`;
+                }
+
                 if (t.type === 'group') {
                     const droppedSet = new Set(t.droppedIdx);
-                    return t.subResults.map((sr, i) => {
-                        const mark = droppedSet.has(i) ? ' (dropped)' : '';
-                        return `${sr.formula}=${sr.total}${mark}`;
+                    const inner = t.subResults.map((sr, i) => {
+                        const mark = droppedSet.has(i) ? ' <span class="roll-dropped">(dropped)</span>' : '';
+                        const subParts = sr.terms.map(st => {
+                            if (st.type === 'constant') return `<span class="roll-kept">${st.sign === -1 ? '-' : ''}${st.desc}</span>`;
+                            const rolls = st.rolls.map(v => `<span class="roll-kept">${v}</span>`);
+                            return `<span class="roll-pill">${rolls.join('<span class="separator">,</span> ')}</span>`;
+                        }).join(' ');
+                        return `<span class="group-sub-label">${sr.formula}:</span>${subParts}<span class="group-sub-total">= ${sr.total}</span>${mark}`;
                     }).join(' vs ');
+                    return `${sign}${inner}`;
                 }
-                const prefix = t.sign === -1 ? '(-) ' : '';
-                return prefix + '[' + t.rolls.join(', ') + ']';
-            }).join(' ');
+
+                // Dice term — build pill with crit/fumble coloring
+                const allRolls = t.rolls || [];
+                const droppedSet = new Set();
+                if (t.dropped) {
+                    for (const d of t.dropped) {
+                        for (let i = 0; i < allRolls.length; i++) {
+                            if (allRolls[i] === d && !droppedSet.has(i)) {
+                                droppedSet.add(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+                const rollSpans = allRolls.map((v, i) => {
+                    let cls = 'roll-kept';
+                    if (droppedSet.has(i)) cls = 'roll-dropped';
+                    else if (t.count !== undefined && i >= t.count) cls = 'roll-added';
+                    else if (!t.isFate && v === t.sides) cls = 'roll-crit';
+                    else if (!t.isFate && v === 1) cls = 'roll-fumble';
+                    const display = t.isFate ? ['-', '0', '+'][v + 1] : v;
+                    return `<span class="${cls}">${display}</span>`;
+                });
+                const pill = `<span class="roll-pill">${rollSpans.join('<span class="separator">,</span> ')}</span>`;
+                return `${sign}${pill}`;
+            });
+            details = `<span class="rolls hist-rolls">${parts.join('')}</span>`;
         }
         return `
             <div class="hist-item" onclick="rollHistory(${i})">

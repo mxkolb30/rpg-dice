@@ -22,31 +22,37 @@ function displayResult(result, targetSel) {
 
     const theme = getDieTheme(result.formula);
 
-    let rollsHtml = '';
-    for (const term of result.terms) {
+    const termHtmls = [];
+    for (let ti = 0; ti < result.terms.length; ti++) {
+        const term = result.terms[ti];
+        const sign = term.sign === -1 ? '-' : '+';
+
         if (term.type === 'constant') {
-            rollsHtml += `<span class="roll-kept">${term.sign === -1 ? '-' : ''}${term.desc}</span> `;
+            if (ti > 0) termHtmls.push(`<span class="roll-operator">${sign}</span>`);
+            else if (sign === '-') termHtmls.push(`<span class="roll-operator">-</span>`);
+            termHtmls.push(`<span class="roll-constant">${term.desc}</span>`);
         } else if (term.type === 'group') {
-            const prefix = term.sign === -1 ? '(-) ' : '';
+            if (ti > 0) termHtmls.push(`<span class="roll-operator">${sign}</span>`);
             const droppedSet = new Set(term.droppedIdx);
-            rollsHtml += `${prefix}<div class="group-rolls">`;
-            term.subResults.forEach((sub, i) => {
+            const groupHtml = term.subResults.map((sub, i) => {
                 const isDropped = droppedSet.has(i);
                 const cls = isDropped ? 'group-sub dropped' : 'group-sub';
-                let subRolls = '';
+                let subParts = [];
                 for (const t of sub.terms) {
                     if (t.type === 'constant') {
-                        subRolls += `${t.sign === -1 ? '-' : ''}${t.desc} `;
+                        subParts.push(`<span class="roll-kept">${t.sign === -1 ? '-' : ''}${t.desc}</span>`);
                     } else {
-                        subRolls += `[${t.rolls.join(', ')}] `;
+                        const rolls = t.rolls.map(v => `<span class="roll-kept">${v}</span>`);
+                        subParts.push(`<span class="roll-pill">${rolls.join('<span class="separator">,</span> ')}</span>`);
                     }
                 }
-                rollsHtml += `<div class="${cls}"><span class="group-sub-label">${sub.formula}:</span>${subRolls}<span class="group-sub-total">= ${sub.total}</span></div>`;
-            });
-            rollsHtml += `</div>`;
+                return `<div class="${cls}"><span class="group-sub-label">${sub.formula}:</span>${subParts.join(' ')}<span class="group-sub-total">= ${sub.total}</span></div>`;
+            }).join('');
+            termHtmls.push(`<div class="roll-term"><span class="roll-term-label">${esc(term.desc)}</span><div class="group-rolls">${groupHtml}</div></div>`);
         } else {
-            const prefix = term.sign === -1 ? '(-) ' : '';
-            const parts = [];
+            if (ti > 0) termHtmls.push(`<span class="roll-operator">${sign}</span>`);
+            else if (sign === '-') termHtmls.push(`<span class="roll-operator">-</span>`);
+
             const allRolls = term.rolls;
             const droppedSet = new Set();
             for (const d of term.dropped) {
@@ -57,6 +63,8 @@ function displayResult(result, targetSel) {
                     }
                 }
             }
+
+            const parts = [];
             for (let i = 0; i < allRolls.length; i++) {
                 const v = allRolls[i];
                 let cls = 'roll-kept';
@@ -68,7 +76,10 @@ function displayResult(result, targetSel) {
                 const display = term.isFate ? ['-', '0', '+'][v + 1] : v;
                 parts.push(`<span class="${cls}">${display}</span>`);
             }
-            rollsHtml += `${prefix}[${parts.join(', ')}] `;
+
+            const pillContent = parts.join('<span class="separator">,</span> ');
+            const label = `<span class="roll-term-label">${esc(term.desc)}</span>`;
+            termHtmls.push(`<span class="roll-term">${label}<span class="roll-pill">${pillContent}</span></span>`);
         }
     }
 
@@ -77,7 +88,7 @@ function displayResult(result, targetSel) {
             <div class="result-total${critClass} animate" style="background-color: ${theme.bg}; color: ${theme.text}">${result.total}</div>
             <div class="result-details">
                 <div class="formula">${result.formula}</div>
-                <div class="rolls">${rollsHtml}</div>
+                <div class="rolls">${termHtmls.join('')}</div>
             </div>
         </div>
     `;
