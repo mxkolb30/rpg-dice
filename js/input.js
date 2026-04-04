@@ -82,12 +82,18 @@ function getButtonStates(input) {
     const hasExplode = /!!|!p|!/.test(modifiers);
     const hasReroll = /[Rr]/.test(modifiers);
     const hasFailure = /f/.test(modifiers);
+    const hasSuccess = /[≥≤]/.test(modifiers.replace(/(?:!!|!p|!|R|r|f)[≥≤]\d*/g, ''));
 
     function enableUnusedMods() {
+        if (hasSuccess) {
+            if (!hasFailure) { s.f = true; }
+            return;
+        }
         if (!hasKeepDrop) { s.K = true; s.k = true; s.X = true; s.x = true; }
         if (!hasExplode) { s.bang = true; s.bangbang = true; s.bangp = true; }
         if (!hasReroll) { s.R = true; s.r = true; }
         if (!hasFailure) { s.f = true; }
+        if (!hasSuccess) { s.compare = true; }
     }
 
     function enableGroupNav() {

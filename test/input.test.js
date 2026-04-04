@@ -52,3 +52,14 @@ bs = enabledKeys('1d8+');
 global.assert(bs.includes('dice'), 'After +: dice enabled');
 global.assert(bs.includes('openParen'), 'After +: openParen enabled');
 global.assert(!bs.includes('K'), 'After +: K disabled');
+
+// --- Regression: Multiple comparison operators ---
+// After 1d6!≥3: compare (≥/≤) should still be enabled (for a success threshold)
+bs = enabledKeys('1d6!≥3');
+global.assert(bs.includes('compare'), 'After 1d6!≥3: compare should be enabled for success threshold');
+
+// After 1d6≥5: modifiers like ! should be DISABLED
+bs = enabledKeys('1d6≥5');
+global.assert(!bs.includes('bang'), 'After 1d6≥5: explode should be disabled');
+global.assert(!bs.includes('K'), 'After 1d6≥5: keep should be disabled');
+global.assert(bs.includes('f'), 'After 1d6≥5: failure threshold should be enabled');
