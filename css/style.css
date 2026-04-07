@@ -47,6 +47,7 @@ html, body {
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    overscroll-behavior: none;
 }
 
 body {
@@ -81,6 +82,12 @@ body {
     display: flex;
     flex: 1;
     min-height: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (max-width: 767px) {
+    .panels {
+        width: 300%;
+    }
 }
 
 .panel-label {
@@ -268,15 +275,26 @@ button.header-history-btn {
 }
 
 .tab-content {
-    display: none;
+    display: flex;
     flex: 1;
     flex-direction: column;
     overflow-y: auto;
     padding: 8px;
     gap: 4px;
+    visibility: hidden;
 }
 .tab-content.active {
-    display: flex;
+    visibility: visible;
+}
+
+@media (min-width: 768px) {
+    .panels {
+        width: 100% !important;
+        transform: none !important;
+    }
+    .tab-content {
+        visibility: visible;
+    }
 }
 
 #dice.tab-content {

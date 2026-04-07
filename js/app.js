@@ -15,28 +15,27 @@ function applyResponsiveLayout() {
 
     if (isThreePanel()) {
         // All panels visible, no tabs needed
-        $('#dice').classList.add('active');
-        $('#favorites').classList.add('active');
-        $('#history').classList.add('active');
+        $$('.tab-content').forEach(t => {
+            t.classList.add('active');
+            t.style.visibility = 'visible';
+        });
         backdrop.classList.add('hidden');
+        $('.panels').style.transform = '';
     } else if (isMultiPanel()) {
         // Dice + Favorites always visible; history starts closed
         $('#dice').classList.add('active');
+        $('#dice').style.visibility = 'visible';
         $('#favorites').classList.add('active');
+        $('#favorites').style.visibility = 'visible';
         $('#history').classList.remove('active');
+        $('#history').style.visibility = '';
         backdrop.classList.add('hidden');
+        $('.panels').style.transform = '';
     } else {
         // Single column: restore single-tab behavior
         backdrop.classList.add('hidden');
-        // Remove active from all panels, then activate only the current tab's panel
-        $$('.tab-content').forEach(t => t.classList.remove('active'));
-        const activeTab = $('.tab.active');
-        if (activeTab) {
-            $(`#${activeTab.dataset.tab}`).classList.add('active');
-        } else {
-            $$('.tab')[0].classList.add('active');
-            $('#dice').classList.add('active');
-        }
+        const activeTab = $('.tab.active')?.dataset.tab || 'dice';
+        switchToTab(activeTab);
     }
 }
 
@@ -46,17 +45,67 @@ function closeHistoryOverlay() {
 }
 
 // Tab navigation
+const tabsOrder = ['dice', 'favorites', 'history'];
+
+function switchToTab(tabId) {
+    if (isMultiPanel()) return;
+    const tab = $(`.tab[data-tab="${tabId}"]`);
+    if (!tab) return;
+
+    $$('.tab').forEach(t => t.classList.remove('active'));
+    $$('.tab-content').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const targetContent = $(`#${tabId}`);
+    targetContent.classList.add('active');
+
+    const index = tabsOrder.indexOf(tabId);
+    $('.panels').style.transform = `translateX(-${(index * 100) / tabsOrder.length}%)`;
+}
+
+function switchTabRelative(offset) {
+    const currentTab = $('.tab.active')?.dataset.tab || 'dice';
+    let index = tabsOrder.indexOf(currentTab);
+    index += offset;
+
+    if (index >= 0 && index < tabsOrder.length) {
+        switchToTab(tabsOrder[index]);
+    }
+}
+
 $$('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
-        if (isMultiPanel()) return; // Tabs hidden on medium+, but just in case
-
-        const target = tab.dataset.tab;
-        $$('.tab').forEach(t => t.classList.remove('active'));
-        $$('.tab-content').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        $(`#${target}`).classList.add('active');
+        switchToTab(tab.dataset.tab);
     });
 });
+
+// Swipe support
+let touchStartX = 0;
+let touchStartY = 0;
+const SWIPE_THRESHOLD = 50;
+
+$('.panels').addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+$('.panels').addEventListener('touchend', (e) => {
+    if (isMultiPanel()) return;
+
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    // Must be horizontal swipe and exceed threshold
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
+        if (deltaX > 0) {
+            switchTabRelative(-1); // Swipe right -> previous
+        } else {
+            switchTabRelative(1);  // Swipe left -> next
+        }
+    }
+}, { passive: true });
 
 // Backdrop and close button close history overlay
 $('#historyBackdrop').addEventListener('click', closeHistoryOverlay);
