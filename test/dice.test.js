@@ -196,6 +196,24 @@ for (const sides of diceToTest) {
     res = rollFormula('1d6!≥3≥5');
     global.assert(res.total === 1, '1d6!≥3≥5 (3, 5, 2) should explode twice, but only 5 is a success (>=5)');
 
+    // 15. Exploded Indices Tracking
+    rollValues = [6, 6, 2]; rollIdx = 0;
+    res = rollFormula('1d6!');
+    // Rolls: 6 (exploded), 6 (exploded), 2
+    global.assert(res.terms[0].exploded.length === 2, '1d6! (6, 6, 2) should have 2 exploded indices');
+    global.assert(res.terms[0].exploded[0] === 0, 'First explosion index should be 0');
+    global.assert(res.terms[0].exploded[1] === 1, 'Second explosion index should be 1');
+
+    // 16. Exploded Indices in Groups
+    rollValues = [6, 2, 4]; rollIdx = 0;
+    res = rollFormula('(1d6!, 1d4)');
+    // subResults[0]: 1d6! -> 6 (exploded), 2
+    // subResults[1]: 1d4 -> 4
+    global.assert(res.terms[0].type === 'group', 'Term should be a group');
+    global.assert(res.terms[0].subResults[0].terms[0].exploded.length === 1, 'Group sub 0 should have 1 exploded index');
+    global.assert(res.terms[0].subResults[0].terms[0].exploded[0] === 0, 'Group sub 0 explosion index should be 0');
+    global.assert(!res.terms[0].subResults[1].terms[0].exploded || res.terms[0].subResults[1].terms[0].exploded.length === 0, 'Group sub 1 should have no exploded indices');
+
     // Restore original
     rollDie = originalRollDie;
 }

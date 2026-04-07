@@ -42,7 +42,11 @@ function displayResult(result, targetSel) {
                     if (t.type === 'constant') {
                         subParts.push(`<span class="roll-kept">${t.sign === -1 ? '-' : ''}${t.desc}</span>`);
                     } else {
-                        const rolls = t.rolls.map(v => `<span class="roll-kept">${v}</span>`);
+                        const explodedSet = new Set(t.exploded || []);
+                        const rolls = t.rolls.map((v, idx) => {
+                            const bang = explodedSet.has(idx) ? '!' : '';
+                            return `<span class="roll-kept">${v}${bang}</span>`;
+                        });
                         subParts.push(`<span class="roll-pill">${rolls.join('<span class="separator">,</span> ')}</span>`);
                     }
                 }
@@ -54,6 +58,7 @@ function displayResult(result, targetSel) {
             else if (sign === '-') termHtmls.push(`<span class="roll-operator">-</span>`);
 
             const allRolls = term.rolls;
+            const explodedSet = new Set(term.exploded || []);
             const droppedSet = new Set();
             for (const d of term.dropped) {
                 for (let i = 0; i < allRolls.length; i++) {
@@ -73,8 +78,9 @@ function displayResult(result, targetSel) {
                 else if (!term.isFate && v === term.sides) cls = 'roll-crit';
                 else if (!term.isFate && v === 1) cls = 'roll-fumble';
 
+                const bang = explodedSet.has(i) ? '!' : '';
                 const display = term.isFate ? ['-', '0', '+'][v + 1] : v;
-                parts.push(`<span class="${cls}">${display}</span>`);
+                parts.push(`<span class="${cls}">${display}${bang}</span>`);
             }
 
             const pillContent = parts.join('<span class="separator">,</span> ');

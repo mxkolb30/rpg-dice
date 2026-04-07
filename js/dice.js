@@ -249,13 +249,17 @@ function evaluateDiceTerm(expr) {
 
     // Explode
     let extraRolls = [];
+    let explodedIdx = [];
     if (explode) {
         for (let i = 0; i < rolls.length; i++) {
             let val = rolls[i];
             let iter = 0;
+            let currentParentIdx = i;
             while (matchesCondition(val, explode) && iter < 100) {
+                explodedIdx.push(currentParentIdx);
                 val = rollDie(sides);
                 extraRolls.push(val);
+                currentParentIdx = rolls.length + extraRolls.length - 1;
                 iter++;
             }
         }
@@ -267,6 +271,7 @@ function evaluateDiceTerm(expr) {
             let val = rolls[i];
             let iter = 0;
             while (matchesCondition(val, compound) && iter < 100) {
+                explodedIdx.push(i); // Mark as exploded even if compounded
                 val = rollDie(sides);
                 rolls[i] += val;
                 iter++;
@@ -279,9 +284,12 @@ function evaluateDiceTerm(expr) {
         for (let i = 0; i < rolls.length; i++) {
             let val = rolls[i];
             let iter = 0;
+            let currentParentIdx = i;
             while (matchesCondition(val, penetrate) && iter < 100) {
+                explodedIdx.push(currentParentIdx);
                 val = rollDie(sides);
                 extraRolls.push(val - 1);
+                currentParentIdx = rolls.length + extraRolls.length - 1;
                 iter++;
             }
         }
@@ -375,6 +383,7 @@ function evaluateDiceTerm(expr) {
         rolls: allRolls,
         kept,
         dropped,
+        exploded: explodedIdx,
         isCrit,
         isFumble,
         sides,

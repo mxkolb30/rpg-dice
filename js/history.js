@@ -10,12 +10,13 @@ function addHistory(result) {
         rolls: result.terms.map(t => {
             if (t.type === 'group') return {
                 type: 'group', sign: t.sign, desc: t.desc,
-                subResults: t.subResults.map(sr => ({ formula: sr.formula, total: sr.total, terms: sr.terms.map(st => ({ type: st.type, rolls: st.rolls, desc: st.desc, sign: st.sign })) })),
+                subResults: t.subResults.map(sr => ({ formula: sr.formula, total: sr.total, terms: sr.terms.map(st => ({ type: st.type, rolls: st.rolls, desc: st.desc, sign: st.sign, exploded: st.exploded })) })),
                 keptIdx: t.keptIdx, droppedIdx: t.droppedIdx,
             };
             return {
                 type: t.type, rolls: t.rolls, kept: t.kept, dropped: t.dropped,
                 sign: t.sign, desc: t.desc, sides: t.sides, isFate: t.isFate, count: t.count,
+                exploded: t.exploded
             };
         }),
         time: Date.now()
@@ -63,7 +64,11 @@ function renderHistory() {
                         const mark = droppedSet.has(i) ? ' <span class="roll-dropped">(dropped)</span>' : '';
                         const subParts = sr.terms.map(st => {
                             if (st.type === 'constant') return `<span class="roll-kept">${st.sign === -1 ? '-' : ''}${st.desc}</span>`;
-                            const rolls = st.rolls.map(v => `<span class="roll-kept">${v}</span>`);
+                            const explodedSet = new Set(st.exploded || []);
+                            const rolls = st.rolls.map((v, idx) => {
+                                const bang = explodedSet.has(idx) ? '!' : '';
+                                return `<span class="roll-kept">${v}${bang}</span>`;
+                            });
                             return `<span class="roll-pill">${rolls.join('<span class="separator">,</span> ')}</span>`;
                         }).join(' ');
                         return `<span class="group-sub-label">${sr.formula}:</span>${subParts}<span class="group-sub-total">= ${sr.total}</span>${mark}`;
@@ -73,6 +78,7 @@ function renderHistory() {
 
                 // Dice term — build pill with crit/fumble coloring
                 const allRolls = t.rolls || [];
+                const explodedSet = new Set(t.exploded || []);
                 const droppedSet = new Set();
                 if (t.dropped) {
                     for (const d of t.dropped) {
@@ -90,8 +96,9 @@ function renderHistory() {
                     else if (t.count !== undefined && i >= t.count) cls = 'roll-added';
                     else if (!t.isFate && v === t.sides) cls = 'roll-crit';
                     else if (!t.isFate && v === 1) cls = 'roll-fumble';
+                    const bang = explodedSet.has(i) ? '!' : '';
                     const display = t.isFate ? ['-', '0', '+'][v + 1] : v;
-                    return `<span class="${cls}">${display}</span>`;
+                    return `<span class="${cls}">${display}${bang}</span>`;
                 });
                 const pill = `<span class="roll-pill">${rollSpans.join('<span class="separator">,</span> ')}</span>`;
                 return `${sign}${pill}`;
