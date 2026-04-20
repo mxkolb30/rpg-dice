@@ -33,16 +33,13 @@ $('#saveFav').addEventListener('click', () => {
 function renderFavorites() {
     const list = $('#favList');
     const empty = $('#favEmpty');
-    const header = $('#favoritesHeader');
 
     if (state.favorites.length === 0) {
         empty.classList.remove('hidden');
-        header.style.display = 'none';
         list.innerHTML = '';
         return;
     }
     empty.classList.add('hidden');
-    header.style.display = '';
 
     const groups = {};
     for (const fav of state.favorites) {

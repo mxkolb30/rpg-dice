@@ -98,3 +98,4 @@ function importFavorites() {
 
 $('#exportFavBtn').addEventListener('click', exportFavorites);
 $('#importFavBtn').addEventListener('click', importFavorites);
+$('#importFavBtnEmpty')?.addEventListener('click', importFavorites);
